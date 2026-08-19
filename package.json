@@ -1,0 +1,13 @@
+{
+  "name": "nexttech",
+  "version": "1.0.0",
+  "description": "Loja NextTech",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "mercadopago": "^2.3.0"
+  }
+}

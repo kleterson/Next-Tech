@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo | NextTech</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: #1f2937;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; min-height: 100vh; }
+
+        /* TELA DE LOGIN DO ADMIN */
+        #admin-login-screen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--bg-color); display: flex; align-items: center; justify-content: center; z-index: 9999;
+        }
+        .login-card {
+            background-color: var(--card-bg); border: 1px solid var(--border-color); padding: 2.5rem;
+            border-radius: 16px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center;
+        }
+        .login-card h2 { color: white; margin-bottom: 1.5rem; font-size: 1.5rem; border: none; padding: 0; }
+        .login-card .form-control { margin-bottom: 1.2rem; }
+
+        /* PAINEL PRINCIPAL */
+        #painel-conteudo { display: none; width: 100%; }
+        body.logado #painel-conteudo { display: flex; }
+        body.logado #admin-login-screen { display: none; }
+
+        aside {
+            width: 260px; background-color: var(--card-bg); border-right: 1px solid var(--border-color);
+            display: flex; flex-direction: column; padding: 2rem 1.5rem; position: fixed; height: 100vh;
+        }
+        .admin-logo { font-size: 1.25rem; font-weight: 700; color: white; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 10px; }
+        .admin-logo span { color: var(--accent-color); }
+        
+        .menu-nav { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+        .menu-btn {
+            background: transparent; border: none; color: var(--text-muted); padding: 0.8rem 1rem;
+            text-align: left; border-radius: 8px; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 12px; transition: all 0.3s;
+        }
+        .menu-btn:hover, .menu-btn.active { background-color: var(--accent-color); color: white; }
+
+        main { margin-left: 260px; flex: 1; padding: 3rem; overflow-y: auto; }
+        .section-panel { display: none; }
+        .section-panel.active { display: block; }
+
+        h2 { font-size: 1.8rem; margin-bottom: 1.5rem; color: white; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
+        
+        .card-form { background-color: var(--card-bg); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; margin-bottom: 2rem; }
+        .form-group { margin-bottom: 1.2rem; text-align: left; }
+        .form-group label { display: block; font-size: 0.9rem; margin-bottom: 0.4rem; color: var(--text-muted); }
+        .form-control { width: 100%; padding: 0.75rem; background: #1a2234; border: 1px solid var(--border-color); color: white; border-radius: 8px; font-size: 0.95rem; }
+
+        .btn-salvar { background: var(--accent-color); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.3s; width: auto; }
+        .btn-salvar:hover { background: var(--accent-hover); }
+
+        .estoque-filtros { display: flex; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .filtro-cat-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-muted); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 500; transition: all 0.3s; }
+        .filtro-cat-btn:hover, .filtro-cat-btn.active { background: var(--accent-color); color: white; border-color: var(--accent-color); }
+
+        .estoque-item { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); border: 1px solid var(--border-color); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
+        .estoque-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; background: #1a2234; }
+
+        .pedido-card { background: var(--card-bg); border: 1px solid var(--border-color); border-left: 5px solid #3b82f6; padding: 1.5rem; border-radius: 10px; margin-bottom: 1rem; text-align: left; }
+        .pedido-header { display: flex; justify-content: space-between; margin-bottom: 0.8rem; font-weight: 600; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; align-items: center; }
+        .badge-status { background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <!-- TELA DE LOGIN DO ADMINISTRADOR -->
+    <div id="admin-login-screen">
+        <div class="login-card">
+            <div class="admin-logo" style="justify-content: center; margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-lock"></i> Next<span>Admin</span>
+            </div>
+            <h2>Restrito ao Administrador</h2>
+            <div class="form-group">
+                <label>Digite a senha de acesso:</label>
+                <input type="password" id="senha-admin-input" class="form-control" placeholder="Sua senha secreta">
+            </div>
+            <button class="btn-salvar" style="width: 100%;" onclick="fazerLoginAdmin()">Entrar no Painel</button>
+            <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted);">Senha padrão inicial: <code>admin123</code></p>
+        </div>
+    </div>
+
+    <!-- PAINEL ADMINISTRATIVO COMPLETO -->
+    <div id="painel-conteudo">
+        <aside>
+            <div class="admin-logo">
+                <i class="fa-solid fa-gauge-high"></i> Next<span>Admin</span>
+            </div>
+            <div class="menu-nav">
+                <button class="menu-btn active" onclick="trocarAba('produtos', event)"><i class="fa-solid fa-box"></i> Adicionar Produtos</button>
+                <button class="menu-btn" onclick="trocarAba('estoque', event)"><i class="fa-solid fa-warehouse"></i> Estoque & Preços</button>
+                <button class="menu-btn" onclick="trocarAba('banners', event)"><i class="fa-solid fa-image"></i> Banners por Categoria</button>
+                <button class="menu-btn" onclick="trocarAba('pagamentos', event)"><i class="fa-solid fa-wallet"></i> Pagamentos & Token</button>
+                <button class="menu-btn" onclick="trocarAba('pedidos', event)"><i class="fa-solid fa-receipt"></i> Pedidos em Tempo Real</button>
+                <button class="menu-btn" onclick="trocarAba('clientes', event)"><i class="fa-solid fa-users"></i> Clientes Cadastrados</button>
+                <button class="menu-btn" onclick="trocarAba('alterar-senha', event)"><i class="fa-solid fa-key"></i> Alterar Senha</button>
+                <button class="menu-btn" onclick="logoutAdmin()" style="margin-top: auto; color: #ef4444;"><i class="fa-solid fa-right-from-bracket"></i> Sair / Bloquear</button>
+            </div>
+        </aside>
+
+        <main>
+            <!-- ABA PRODUTOS -->
+            <div id="produtos" class="section-panel active">
+                <h2>Gerenciamento de Produtos</h2>
+                <div class="card-form">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.1rem; text-align: left;">Cadastrar Novo Produto</h3>
+                    <div class="form-group">
+                        <label>Nome do Produto</label>
+                        <input type="text" id="prod-nome" class="form-control" placeholder="Ex: iPhone 17 Pro Max">
+                    </div>
+                    <div class="form-group">
+                        <label>Preço Normal (R$)</label>
+                        <input type="number" id="prod-preco" class="form-control" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>URL da Imagem</label>
+                        <input type="text" id="prod-imagem" class="form-control" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label>Categoria</label>
+                        <select id="prod-categoria" class="form-control">
+                            <option value="celulares">Celulares</option>
+                            <option value="projetores">Projetores</option>
+                            <option value="televisao">Televisão</option>
+                            <option value="audio">Áudio</option>
+                        </select>
+                    </div>
+                    <button class="btn-salvar" onclick="salvarProduto()">Cadastrar Produto</button>
+                </div>
+            </div>
+
+            <!-- ABA ESTOQUE -->
+            <div id="estoque" class="section-panel">
+                <h2>Gerenciamento de Estoque</h2>
+                <div class="estoque-filtros">
+                    <button class="filtro-cat-btn active" onclick="filtrarEstoqueAdmin('todos', event)">Todos</button>
+                    <button class="filtro-cat-btn" onclick="filtrarEstoqueAdmin('celulares', event)">Celulares</button>
+                    <button class="filtro-cat-btn" onclick="filtrarEstoqueAdmin('projetores', event)">Projetores</button>
+                    <button class="filtro-cat-btn" onclick="filtrarEstoqueAdmin('televisao', event)">Televisão</button>
+                    <button class="filtro-cat-btn" onclick="filtrarEstoqueAdmin('audio', event)">Áudio</button>
+                </div>
+                <div id="lista-estoque"></div>
+            </div>
+
+            <!-- ABA BANNERS -->
+            <div id="banners" class="section-panel">
+                <h2>Banners por Categoria</h2>
+                <div class="card-form" style="text-align: left;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">Banner para Categoria Celulares</h3>
+                    <div class="form-group"><input type="text" id="banner-celulares" class="form-control" placeholder="URL da imagem"></div>
+
+                    <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem;">Banner para Categoria Projetores</h3>
+                    <div class="form-group"><input type="text" id="banner-projetores" class="form-control" placeholder="URL da imagem"></div>
+
+                    <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem;">Banner para Categoria Televisão</h3>
+                    <div class="form-group"><input type="text" id="banner-televisao" class="form-control" placeholder="URL da imagem"></div>
+
+                    <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem;">Banner para Categoria Áudio</h3>
+                    <div class="form-group"><input type="text" id="banner-audio" class="form-control" placeholder="URL da imagem"></div>
+
+                    <button class="btn-salvar" style="margin-top: 1rem;" onclick="salvarBanners()">Salvar Banners</button>
+                </div>
+            </div>
+
+            <!-- ABA PAGAMENTOS E TOKEN -->
+            <div id="pagamentos" class="section-panel">
+                <h2>Configurações de Pagamento & Token</h2>
+                <div class="card-form" style="text-align: left;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.1rem;"><i class="fa-solid fa-wallet"></i> Mercado Pago & Formas de Pagamento</h3>
+                    <div class="form-group">
+                        <label>Chave Access Token do Mercado Pago</label>
+                        <input type="text" id="mp-token" class="form-control" placeholder="APP_USR-xxxx-xxxx">
+                    </div>
+                    <div class="form-group">
+                        <label>Chave Public Key do Mercado Pago</label>
+                        <input type="text" id="mp-public-key" class="form-control" placeholder="APP_USR-xxxx-xxxx">
+                    </div>
+                    <div class="form-group">
+                        <label>Métodos de Pagamento Ativados na Loja</label>
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
+                            <label><input type="checkbox" id="ativa-credito" checked> Cartão de Crédito (Com Parcelamento)</label>
+                            <label><input type="checkbox" id="ativa-debito" checked> Cartão de Débito</label>
+                            <label><input type="checkbox" id="ativa-pix" checked> Pix (QR Code / Copia e Cola)</label>
+                        </div>
+                    </div>
+                    <button class="btn-salvar" onclick="salvarConfigPagamento()">Salvar Configurações</button>
+                </div>
+            </div>
+
+            <!-- ABA PEDIDOS -->
+            <div id="pedidos" class="section-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); margin-bottom: 1.5rem; padding-bottom: 0.5rem;">
+                    <h2 style="border: none; margin: 0; padding: 0;">Pedidos Realizados pelos Clientes</h2>
+                    <button onclick="limparHistoricoPedidos()" style="background: #ef4444; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.9rem;"><i class="fa-solid fa-trash"></i> Limpar Histórico</button>
+                </div>
+                <div id="lista-pedidos-admin"></div>
+            </div>
+
+            <!-- ABA CLIENTES -->
+            <div id="clientes" class="section-panel">
+                <h2>Clientes Cadastrados em Tempo Real</h2>
+                <div class="card-form" style="margin-bottom: 2rem; text-align: left;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.1rem;"><i class="fa-solid fa-user-plus"></i> Adicionar Novo Cadastro Manualmente</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 1rem;">
+                        <div>
+                            <label style="font-size:0.8rem; color:var(--text-muted);">Nome:</label>
+                            <input type="text" id="novo-cli-nome" class="form-control" placeholder="Nome completo">
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; color:var(--text-muted);">Login (E-mail):</label>
+                            <input type="email" id="novo-cli-login" class="form-control" placeholder="email@exemplo.com">
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; color:var(--text-muted);">Senha:</label>
+                            <input type="text" id="novo-cli-senha" class="form-control" placeholder="Senha">
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <button class="btn-salvar" style="padding: 0.6rem 1.5rem;" onclick="criarNovoClienteAdmin()"><i class="fa-solid fa-plus"></i> Criar Cadastro</button>
+                    </div>
+                </div>
+                <div id="lista-clientes-admin" style="display: flex; flex-direction: column; gap: 15px;"></div>
+            </div>
+
+            <!-- ABA ALTERAR SENHA DO ADMIN -->
+            <div id="alterar-senha" class="section-panel">
+                <h2>Segurança da Conta Admin</h2>
+                <div class="card-form" style="text-align: left; max-width: 500px;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.1rem;"><i class="fa-solid fa-key"></i> Atualizar Senha de Acesso</h3>
+                    <div class="form-group">
+                        <label>Nova Senha de Acesso</label>
+                        <input type="password" id="input-alterar-senha-admin" class="form-control" placeholder="Digite a nova senha">
+                    </div>
+                    <button class="btn-salvar" onclick="salvarNovaSenhaAdmin()"><i class="fa-solid fa-save"></i> Salvar Nova Senha</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let categoriaEstoqueAtual = 'todos';
+
+        window.onload = function() {
+            if(sessionStorage.getItem('admin_logado') === 'true') {
+                document.body.classList.add('logado');
+                document.getElementById('painel-conteudo').style.display = 'flex';
+            }
+        };
+
+        function fazerLoginAdmin() {
+            let senhaDigitada = document.getElementById('senha-admin-input').value;
+            let senhaCadastrada = localStorage.getItem('admin_senha') || 'admin123';
+
+            if(senhaDigitada === senhaCadastrada) {
+                sessionStorage.setItem('admin_logado', 'true');
+                document.body.classList.add('logado');
+                document.getElementById('painel-conteudo').style.display = 'flex';
+            } else {
+                alert('Senha incorreta! Tente novamente.');
+            }
+        }
+
+        function logoutAdmin() {
+            sessionStorage.removeItem('admin_logado');
+            document.body.classList.remove('logado');
+            document.getElementById('painel-conteudo').style.display = 'none';
+            document.getElementById('senha-admin-input').value = '';
+        }
+
+        function trocarAba(idAba, event) {
+            document.querySelectorAll('.section-panel').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.menu-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(idAba).classList.add('active');
+            event.currentTarget.classList.add('active');
+
+            if(idAba === 'estoque') carregarEstoqueAdmin();
+            if(idAba === 'pedidos') carregarPedidosAdmin();
+            if(idAba === 'banners') carregarBannersAdmin();
+            if(idAba === 'pagamentos') carregarConfigPagamentoAdmin();
+            if(idAba === 'clientes') carregarClientesAdmin();
+        }
+
+        async function salvarConfigPagamento() {
+            const token = document.getElementById('mp-token').value;
+            const publicKey = document.getElementById('mp-public-key').value;
+            const credito = document.getElementById('ativa-credito').checked;
+            const debito = document.getElementById('ativa-debito').checked;
+            const pix = document.getElementById('ativa-pix').checked;
+            
+            // 1. Salva localmente para persistência visual imediata
+            localStorage.setItem('config_pagamento', JSON.stringify({ token, publicKey, credito, debito, pix }));
+
+            // 2. Envia para o servidor backend em produção (Render)
+            try {
+                const response = await fetch('/api/update-token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: token, publicKey: publicKey })
+                });
+                if(response.ok) {
+                    alert('Configurações salvas e chaves atualizadas com sucesso no servidor do Render!');
+                } else {
+                    alert('Configurações salvas, mas o servidor retornou um erro ao atualizar.');
+                }
+            } catch (error) {
+                console.error('Erro ao conectar com o backend:', error);
+                alert('Configurações salvas localmente, mas houve falha ao conectar com o servidor em produção.');
+            }
+        }
+
+        function salvarNovaSenhaAdmin() {
+            let novaSenha = document.getElementById('input-alterar-senha-admin').value.trim();
+            if(!novaSenha) {
+                alert('Digite a nova senha!');
+                return;
+            }
+            localStorage.setItem('admin_senha', novaSenha);
+            alert('Senha do Administrador alterada com sucesso!');
+            document.getElementById('input-alterar-senha-admin').value = '';
+        }
+
+        function carregarClientesAdmin() {
+            const container = document.getElementById('lista-clientes-admin');
+            let usuarios = JSON.parse(localStorage.getItem('usuarios_nexttech')) || [];
+
+            if(usuarios.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted)">Nenhum cliente cadastrado até o momento.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            usuarios.forEach((u, index) => {
+                let loginVal = u.login || u.email || 'Não informado';
+                let dataVal = u.dataCadastro || 'Não registrada';
+
+                container.innerHTML += `
+                    <div class="pedido-card">
+                        <div class="pedido-header">
+                            <span>Cadastro #${index + 1}</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Data/Hora: ${dataVal}</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <label style="font-size:0.8rem; color:var(--text-muted);">Nome:</label>
+                                <input type="text" id="cli-nome-${index}" value="${u.nome || ''}" class="form-control">
+                            </div>
+                            <div>
+                                <label style="font-size:0.8rem; color:var(--text-muted);">Login (E-mail):</label>
+                                <input type="text" id="cli-login-${index}" value="${loginVal}" class="form-control">
+                            </div>
+                            <div>
+                                <label style="font-size:0.8rem; color:var(--text-muted);">Senha:</label>
+                                <input type="text" id="cli-senha-${index}" value="${u.senha || ''}" class="form-control">
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                            <button onclick="excluirClienteAdmin(${index})" style="background: #ef4444; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">
+                                <i class="fa-solid fa-trash"></i> Excluir
+                            </button>
+                            <button class="btn-salvar" style="padding: 0.5rem 1.2rem; font-size: 0.85rem;" onclick="salvarEdicaoCliente(${index})">
+                                <i class="fa-solid fa-pen-to-square"></i> Salvar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function criarNovoClienteAdmin() {
+            let nome = document.getElementById('novo-cli-nome').value.trim();
+            let login = document.getElementById('novo-cli-login').value.trim();
+            let senha = document.getElementById('novo-cli-senha').value.trim();
+
+            if(!nome || !login || !senha) {
+                alert('Preencha todos os campos do novo cadastro!');
+                return;
+            }
+
+            let usuarios = JSON.parse(localStorage.getItem('usuarios_nexttech')) || [];
+            
+            if(usuarios.some(u => (u.login === login || u.email === login))) {
+                alert('Já existe um cliente cadastrado com este e-mail/login!');
+                return;
+            }
+
+            usuarios.push({
+                nome: nome,
+                login: login,
+                email: login,
+                senha: senha,
+                carrinho: [],
+                dataCadastro: new Date().toLocaleString()
+            });
+
+            localStorage.setItem('usuarios_nexttech', JSON.stringify(usuarios));
+            alert('Cliente cadastrado com sucesso!');
+
+            document.getElementById('novo-cli-nome').value = '';
+            document.getElementById('novo-cli-login').value = '';
+            document.getElementById('novo-cli-senha').value = '';
+
+            carregarClientesAdmin();
+        }
+
+        function salvarEdicaoCliente(index) {
+            let usuarios = JSON.parse(localStorage.getItem('usuarios_nexttech')) || [];
+            usuarios[index].nome = document.getElementById(`cli-nome-${index}`).value;
+            let novoLogin = document.getElementById(`cli-login-${index}`).value;
+            usuarios[index].login = novoLogin;
+            usuarios[index].email = novoLogin; 
+            usuarios[index].senha = document.getElementById(`cli-senha-${index}`).value;
+
+            localStorage.setItem('usuarios_nexttech', JSON.stringify(usuarios));
+            alert('Dados do cliente atualizados com sucesso!');
+            carregarClientesAdmin();
+        }
+
+        function excluirClienteAdmin(index) {
+            if(confirm('Tem certeza que deseja excluir permanentemente este cadastro?')) {
+                let usuarios = JSON.parse(localStorage.getItem('usuarios_nexttech')) || [];
+                usuarios.splice(index, 1);
+                localStorage.setItem('usuarios_nexttech', JSON.stringify(usuarios));
+                alert('Cliente excluído com sucesso!');
+                carregarClientesAdmin();
+            }
+        }
+
+        function filtrarEstoqueAdmin(categoria, event) {
+            document.querySelectorAll('.filtro-cat-btn').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            categoriaEstoqueAtual = categoria;
+            carregarEstoqueAdmin();
+        }
+
+        function salvarProduto() {
+            const nome = document.getElementById('prod-nome').value;
+            const preco = parseFloat(document.getElementById('prod-preco').value);
+            const imagem = document.getElementById('prod-imagem').value;
+            const categoria = document.getElementById('prod-categoria').value;
+
+            if(!nome || !preco || !imagem) {
+                alert('Preencha todos os campos do produto!');
+                return;
+            }
+
+            let produtos = JSON.parse(localStorage.getItem('produtos_nexttech')) || [];
+            produtos.push({ nome, preco, imagem, categoria, promocao: false, precoPromo: 0 });
+            localStorage.setItem('produtos_nexttech', JSON.stringify(produtos));
+
+            alert('Produto cadastrado com sucesso!');
+            document.getElementById('prod-nome').value = '';
+            document.getElementById('prod-preco').value = '';
+            document.getElementById('prod-imagem').value = '';
+        }
+
+        function carregarEstoqueAdmin() {
+            const container = document.getElementById('lista-estoque');
+            let produtos = JSON.parse(localStorage.getItem('produtos_nexttech')) || [];
+
+            let produtosFiltrados = produtos.filter((p, index) => {
+                p.originalIndex = index;
+                return categoriaEstoqueAtual === 'todos' || p.categoria === categoriaEstoqueAtual;
+            });
+
+            if(produtosFiltrados.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted)">Nenhum produto encontrado nesta categoria.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            produtosFiltrados.forEach((p) => {
+                let index = p.originalIndex;
+                container.innerHTML += `
+                    <div class="estoque-item">
+                        <img src="${p.imagem}" alt="${p.nome}">
+                        <div style="flex: 1; margin-left: 15px;">
+                            <input type="text" id="est-nome-${index}" value="${p.nome}" class="form-control" style="margin-bottom: 5px;">
+                            <div style="display: flex; gap: 10px;">
+                                <input type="number" id="est-preco-${index}" value="${p.preco}" class="form-control" placeholder="Preço" style="width: 120px;">
+                                <input type="number" id="est-precopromo-${index}" value="${p.precoPromo || 0}" class="form-control" placeholder="Preço Promo" style="width: 120px;">
+                                <label style="display:flex; align-items:center; gap:5px; font-size:0.85rem;"><input type="checkbox" id="est-ativo-${index}" ${p.promocao ? 'checked' : ''}> Promoção?</label>
+                            </div>
+                            <input type="text" id="est-img-${index}" value="${p.imagem}" class="form-control" placeholder="URL da Imagem" style="margin-top: 5px;">
+                        </div>
+                        <div style="margin-left: 15px; display: flex; flex-direction: column; gap: 5px;">
+                            <button class="btn-salvar" style="padding: 0.5rem 1rem; font-size:0.85rem;" onclick="atualizarProduto(${index})">Salvar</button>
+                            <button onclick="excluirProduto(${index})" style="background:#ef4444; color:white; border:none; padding: 0.5rem 1rem; border-radius:8px; cursor:pointer; font-size:0.85rem;">Excluir</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function atualizarProduto(index) {
+            let produtos = JSON.parse(localStorage.getItem('produtos_nexttech')) || [];
+            produtos[index].nome = document.getElementById(`est-nome-${index}`).value;
+            produtos[index].preco = parseFloat(document.getElementById(`est-preco-${index}`).value);
+            produtos[index].precoPromo = parseFloat(document.getElementById(`est-precopromo-${index}`).value);
+            produtos[index].promocao = document.getElementById(`est-ativo-${index}`).checked;
+            produtos[index].imagem = document.getElementById(`est-img-${index}`).value;
+
+            localStorage.setItem('produtos_nexttech', JSON.stringify(produtos));
+            alert('Produto atualizado com sucesso!');
+            carregarEstoqueAdmin();
+        }
+
+        function excluirProduto(index) {
+            if(confirm('Deseja realmente excluir este produto?')) {
+                let produtos = JSON.parse(localStorage.getItem('produtos_nexttech')) || [];
+                produtos.splice(index, 1);
+                localStorage.setItem('produtos_nexttech', JSON.stringify(produtos));
+                carregarEstoqueAdmin();
+            }
+        }
+
+        function salvarBanners() {
+            const banners = {
+                celulares: document.getElementById('banner-celulares').value,
+                projetores: document.getElementById('banner-projetores').value,
+                televisao: document.getElementById('banner-televisao').value,
+                audio: document.getElementById('banner-audio').value
+            };
+            localStorage.setItem('banners_por_categoria', JSON.stringify(banners));
+            alert('Banners salvos com sucesso!');
+        }
+
+        function carregarBannersAdmin() {
+            const banners = JSON.parse(localStorage.getItem('banners_por_categoria')) || {};
+            if(banners.celulares) document.getElementById('banner-celulares').value = banners.celulares;
+            if(banners.projetores) document.getElementById('banner-projetores').value = banners.projetores;
+            if(banners.televisao) document.getElementById('banner-televisao').value = banners.televisao;
+            if(banners.audio) document.getElementById('banner-audio').value = banners.audio;
+        }
+
+        function carregarConfigPagamentoAdmin() {
+            const config = JSON.parse(localStorage.getItem('config_pagamento')) || { token: '', publicKey: '', credito: true, debito: true, pix: true };
+            if(config.token) document.getElementById('mp-token').value = config.token;
+            if(config.publicKey) document.getElementById('mp-public-key').value = config.publicKey;
+            document.getElementById('ativa-credito').checked = config.credito;
+            document.getElementById('ativa-debito').checked = config.debito;
+            document.getElementById('ativa-pix').checked = config.pix;
+        }
+
+        function carregarPedidosAdmin() {
+            const container = document.getElementById('lista-pedidos-admin');
+            let pedidos = JSON.parse(localStorage.getItem('pedidos_nexttech')) || [];
+
+            if(pedidos.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted)">Nenhum pedido realizado até o momento.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            pedidos.forEach((p, index) => {
+                let itensHtml = p.itens.map(i => `<li>${i.nome} (Cor: ${i.cor}) - R$ ${i.preco.toFixed(2)}</li>`).join('');
+                let statusAtual = p.statusEnvio || 'Processando / Aprovado';
+
+                container.innerHTML += `
+                    <div class="pedido-card">
+                        <div class="pedido-header">
+                            <span>Pedido #${p.id} - ${p.cliente}</span>
+                            <span class="badge-status">${statusAtual}</span>
+                        </div>
+                        <p style="font-size:0.9rem; margin-bottom: 5px;"><strong>Endereço:</strong> Rua/Av. ${p.endereco}, Nº ${p.numero} - CEP: ${p.cep}</p>
+                        <p style="font-size:0.9rem; margin-bottom: 5px;"><strong>Pagamento:</strong> ${p.pagamento}</p>
+                        <p style="font-size:0.9rem; margin-bottom: 5px;"><strong>Data:</strong> ${p.data}</p>
+                        <div style="margin-top: 10px; font-size: 0.9rem;">
+                            <strong>Itens:</strong>
+                            <ul style="padding-left: 20px; color: var(--text-muted);">${itensHtml}</ul>
+                        </div>
+                        
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color); display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <div style="flex: 1; min-width: 250px;">
+                                <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Enviar Status para o Cliente:</label>
+                                <select id="select-status-${index}" class="form-control" style="padding: 0.5rem; font-size: 0.85rem;">
+                                    <option value="Pedido sendo embalado">Pedido sendo embalado</option>
+                                    <option value="Seu pedido está sendo transferido para distribuidora">Seu pedido está sendo transferido para distribuidora</option>
+                                    <option value="Seu pedido está a caminho do seu endereço">Seu pedido está a caminho do seu endereço</option>
+                                </select>
+                            </div>
+                            <button class="btn-salvar" style="padding: 0.5rem 1.2rem; font-size: 0.85rem; margin-top: 18px;" onclick="enviarStatusCliente(${index})">
+                                <i class="fa-solid fa-paper-plane"></i> Enviar
+                            </button>
+                        </div>
+
+                        <div style="margin-top: 10px; text-align: right; font-weight: bold; color: var(--accent-color);">
+                            Total: R$ ${p.total.toFixed(2)}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function enviarStatusCliente(index) {
+            let pedidos = JSON.parse(localStorage.getItem('pedidos_nexttech')) || [];
+            let selectElement = document.getElementById(`select-status-${index}`);
+            let novoStatus = selectElement.value;
+
+            pedidos[index].statusEnvio = novoStatus;
+            localStorage.setItem('pedidos_nexttech', JSON.stringify(pedidos));
+
+            alert('Status enviado com sucesso para o cliente!');
+            carregarPedidosAdmin();
+        }
+
+        function limparHistoricoPedidos() {
+            if(confirm('Tem certeza que deseja limpar todo o histórico de pedidos?')) {
+                localStorage.removeItem('pedidos_nexttech');
+                carregarPedidosAdmin();
+            }
+        }
+    </script>
+</body>
+</html>

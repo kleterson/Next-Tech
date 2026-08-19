@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Cadastro | NextTech</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: #1f2937;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); height: 100vh; display: flex; overflow: hidden; }
+
+        .left-side {
+            flex: 1;
+            background: linear-gradient(rgba(11, 15, 25, 0.4), rgba(11, 15, 25, 0.8)), url('neymar.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 3rem;
+            position: relative;
+        }
+
+        .logo-left { font-size: 1.8rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 10px; z-index: 2; }
+        .logo-left span { color: var(--accent-color); }
+
+        .right-side {
+            width: 480px;
+            background-color: var(--card-bg);
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem;
+            overflow-y: auto;
+        }
+
+        .form-container { display: none; }
+        .form-container.active { display: block; }
+
+        h3 { font-size: 1.6rem; margin-bottom: 0.5rem; color: var(--text-main); }
+        .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
+
+        .form-control { width: 100%; padding: 0.8rem; margin-bottom: 1rem; background: #1a2234; border: 1px solid var(--border-color); color: white; border-radius: 8px; font-size: 0.95rem; }
+        .form-control:focus { outline: none; border-color: var(--accent-color); }
+        
+        label { font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 4px; }
+
+        /* Estilo para a opção "Lembrar de mim" */
+        .remember-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+        .remember-container input {
+            accent-color: var(--accent-color);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .btn-primary { background-color: var(--accent-color); color: white; border: none; padding: 0.9rem; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; font-size: 1rem; transition: background 0.3s; margin-top: 0.5rem; }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+
+        .link-acao { text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted); }
+        .link-acao a { color: var(--accent-color); text-decoration: none; font-weight: 600; cursor: pointer; }
+        .link-acao a:hover { text-decoration: underline; }
+
+        /* Sistema de Alertas Modernos (Toasts) */
+        #toast-container {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: white;
+            padding: 1rem 1.8rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: auto;
+            border-left: 5px solid var(--accent-color);
+        }
+
+        .toast.mostrar {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.sucesso { border-left-color: #10b981; }
+        .toast.erro { border-left-color: #ef4444; }
+        .toast.aviso { border-left-color: #f59e0b; }
+
+        .toast.sucesso i { color: #10b981; }
+        .toast.erro i { color: #ef4444; }
+        .toast.aviso i { color: #f59e0b; }
+    </style>
+</head>
+<body>
+
+    <!-- Container das Notificações Modernas -->
+    <div id="toast-container"></div>
+
+    <!-- Lado Esquerdo -->
+    <div class="left-side">
+        <div style="font-size: 0.8rem; color: var(--text-muted); z-index: 2; margin-top: auto;">
+            &copy; 2026 NextTech. Todos os direitos reservados.
+        </div>
+    </div>
+
+    <!-- Lado Direito -->
+    <div class="right-side">
+
+        <!-- Logo e Chamada no Topo -->
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <div class="logo-left" style="justify-content: center; font-size: 2rem; margin-bottom: 0.5rem;">
+                <i class="fa-solid fa-microchip"></i> Next<span>Tech</span>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Tecnologia de Ponta ao Seu Alcance</p>
+        </div>
+
+        <!-- Tela de Login -->
+        <div id="tela-login" class="form-container active">
+            <h3 style="text-align: center;">Bem-vindo</h3>
+            <p class="subtitle" style="text-align: center;">Entre com seus dados para acessar sua conta.</p>
+
+            <label>E-mail</label>
+            <!-- autocomplete="off" impede o navegador de preencher sozinho -->
+            <input type="email" id="login-email" class="form-control" placeholder="seu@email.com" autocomplete="off">
+
+            <label>Senha</label>
+            <input type="password" id="login-senha" class="form-control" placeholder="••••••••" autocomplete="new-password">
+
+            <!-- Opção para o cliente permitir salvar -->
+            <label class="remember-container">
+                <input type="checkbox" id="lembrar-me"> Lembrar meus dados neste aparelho
+            </label>
+
+            <button class="btn-primary" onclick="fazerLogin()">Entrar</button>
+
+            <div class="link-acao">
+                Não tem uma conta? <a onclick="mostrarTela('tela-cadastro')">Cadastre aqui</a>
+            </div>
+        </div>
+
+        <!-- Tela de Cadastro -->
+        <div id="tela-cadastro" class="form-container">
+            <h3 style="text-align: center;">Crie sua conta</h3>
+            <p class="subtitle" style="text-align: center;">Preencha os campos abaixo para se cadastrar.</p>
+
+            <label>Nome Completo</label>
+            <input type="text" id="cad-nome" class="form-control" placeholder="Seu nome completo" autocomplete="off">
+
+            <label>E-mail</label>
+            <input type="email" id="cad-email" class="form-control" placeholder="seu@email.com" autocomplete="off">
+
+            <label>Telefone</label>
+            <input type="text" id="cad-telefone" class="form-control" placeholder="(00) 00000-0000" autocomplete="off">
+
+            <label>Senha</label>
+            <input type="password" id="cad-senha" class="form-control" placeholder="Crie uma senha forte" autocomplete="new-password">
+
+            <button class="btn-primary" onclick="fazerCadastro()">Finalizar Cadastro</button>
+
+            <div class="link-acao">
+                Já tem uma conta? <a onclick="mostrarTela('tela-login')">Faça login</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Limpa os campos automaticamente ao carregar a página para garantir que venham vazios
+        window.onload = function() {
+            document.getElementById('login-email').value = '';
+            document.getElementById('login-senha').value = '';
+            
+            // Verifica se o usuário já tinha optado por salvar anteriormente
+            const salvo = localStorage.getItem('usuario_lembrado');
+            if (salvo) {
+                document.getElementById('login-email').value = salvo;
+                document.getElementById('lembrar-me').checked = true;
+            }
+        };
+
+        function mostrarTela(idTela) {
+            document.querySelectorAll('.form-container').forEach(el => el.classList.remove('active'));
+            document.getElementById(idTela).classList.add('active');
+        }
+
+        function mostrarMensagem(mensagem, tipo = 'sucesso') {
+            const container = document.getElementById('toast-container');
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${tipo}`;
+            
+            let icone = 'fa-circle-check';
+            if (tipo === 'erro') icone = 'fa-circle-exclamation';
+            if (tipo === 'aviso') icone = 'fa-triangle-exclamation';
+
+            toast.innerHTML = `<i class="fa-solid ${icone}" style="font-size: 1.2rem;"></i> <span>${mensagem}</span>`;
+            
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('mostrar');
+            }, 100);
+
+            setTimeout(() => {
+                toast.classList.remove('mostrar');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function fazerCadastro() {
+            const nome = document.getElementById('cad-nome').value.trim();
+            const email = document.getElementById('cad-email').value.trim();
+            const telefone = document.getElementById('cad-telefone').value.trim();
+            const senha = document.getElementById('cad-senha').value.trim();
+
+            if (!nome || !email || !telefone || !senha) {
+                mostrarMensagem('Por favor, preencha todos os campos!', 'aviso');
+                return;
+            }
+
+            let usuarios = JSON.parse(localStorage.getItem('usuarios_nexttech')) || [];
+
+            const existe = usuarios.find(u => u.email === email);
+            if (existe) {
+                mostrarMensagem('Este e-mail já está cadastrado! Faça login.', 'erro');
+                setTimeout(() => mostrarTela('tela-login'), 1500);
+                return;
+            }
+
+            usuarios.push({
+                nome,
+                login: email, 
+                email,
+                telefone,
+                senha,
+                dataCadastro: new Date().toLocaleString(), 
+                carrinho: [],
+                pedidos: []
+            });
+
+            localStorage.setItem('usuarios_nexttech', JSON.stringify(usuarios));
+            
+            mostrarMensagem('Cadastro realizado com sucesso!', 'sucesso');
+            
+            document.getElementById('cad-nome').value = '';
+            document.getElementById('cad-email').value = '';
+            document.getElementById('cad-telefone').value = '';
+            document.getElementById('cad-senha').value = '';
+
+            setTimeout(() => {
+                mostrarTela('tela-login');
+            }, 1200);
+        }
+
+        function fazerLogin() {
+            const email = document.getElementById('login-email').value.trim();
+            const senha = document.getElementById('login-senha').value.trim();
+            const lembrar = document.getElementById('lembrar-me').checked;
+
+            if (!email || !senha) {
+                mostrarMensagem('Informe seu e-mail e senha!', 'aviso');
+                return;
+            }
+
+            let usuarios = JSON.parse(localStorage.getItem('usuarios_nexttech')) || [];
+            const usuarioEncontrado = usuarios.find(u => u.email === email && u.senha === senha);
+
+            if (usuarioEncontrado) {
+                localStorage.setItem('usuario_logado', JSON.stringify(usuarioEncontrado));
+                
+                // Se o cliente marcou a opção, salva o email. Se não, remove.
+                if (lembrar) {
+                    localStorage.setItem('usuario_lembrado', email);
+                } else {
+                    localStorage.removeItem('usuario_lembrado');
+                }
+
+                mostrarMensagem(`Bem-vindo, ${usuarioEncontrado.nome}!`, 'sucesso');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            } else {
+                mostrarMensagem('E-mail ou senha incorretos, ou conta não cadastrada!', 'erro');
+            }
+        }
+    </script>
+</body>
+</html>

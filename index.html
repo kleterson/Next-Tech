@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NextTech | Eletrônicos de Alta Performance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- SDK Oficial do Mercado Pago -->
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: #1f2937;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; }
+
+        header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background-color: rgba(11, 15, 25, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000; display: flex; justify-content: space-between;
+            align-items: center; padding: 1.2rem 5%;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--text-main); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .logo span { color: var(--accent-color); }
+
+        nav ul { display: flex; list-style: none; gap: 2rem; align-items: center; }
+        nav ul li a { color: var(--text-muted); text-decoration: none; font-weight: 500; transition: color 0.3s; cursor: pointer; }
+        nav ul li a:hover, nav ul li a.active { color: var(--accent-color); }
+
+        .header-actions { display: flex; align-items: center; gap: 10px; }
+
+        .cart-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+        
+        .logout-btn { background: #1f2937; border: 1px solid var(--border-color); color: #ef4444; padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; transition: background 0.3s; text-decoration: none; font-size: 0.9rem; }
+        .logout-btn:hover { background: #374151; }
+
+        .status-section { padding: 8rem 5% 2rem 5%; display: none; }
+        
+        .card-pedido { 
+            background: var(--card-bg); border: 1px solid var(--border-color); 
+            padding: 1.5rem; border-radius: 12px; margin-bottom: 1.2rem; 
+        }
+        .card-pedido-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        
+        @keyframes piscarPontos {
+            0% { opacity: 0.2; }
+            50% { opacity: 1; }
+            100% { opacity: 0.2; }
+        }
+
+        .status-badge { 
+            padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; 
+            background: #1e3a8a; color: #60a5fa; display: inline-block; margin-bottom: 5px; 
+        }
+        
+        .status-badge.animado::after {
+            content: " . . .";
+            animation: piscarPontos 1.2s infinite ease-in-out;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .secao-cancelados {
+            margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed rgba(239, 68, 68, 0.4);
+        }
+        
+        .item-cancelado-box {
+            background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px; padding: 10px 14px; margin-top: 8px; display: flex;
+            justify-content: space-between; align-items: center;
+        }
+
+        .hero { padding: 6rem 5% 5rem; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 4rem; min-height: 80vh; }
+        .hero-content h1 { font-size: 3.5rem; margin-bottom: 1.5rem; }
+        .hero-content h1 span { color: var(--accent-color); }
+        .btn-primary { background-color: var(--accent-color); color: white; border: none; padding: 0.9rem 2rem; border-radius: 8px; cursor: pointer; text-decoration: none; display: inline-block; width: 100%; text-align: center; font-weight: 600;}
+        
+        .hero-image { text-align: center; display: flex; justify-content: center; align-items: center; }
+        .hero-image img { max-width: 100%; width: 450px; height: auto; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); object-fit: cover; }
+
+        .products-section { padding: 3rem 5% 5rem 5%; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+        .product-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+        .product-img { height: 180px; width: 100%; object-fit: cover; border-radius: 8px; background-color: #1a2234; margin-bottom: 1rem; }
+        .product-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+        
+        .preco-normal { color: var(--accent-color); font-weight: 600; font-size: 1.1rem; margin-bottom: 1rem; }
+        .preco-antigo { text-decoration: line-through; color: var(--text-muted); font-size: 0.9rem; margin-right: 8px; }
+        .preco-novo { color: #10b981; font-weight: 700; font-size: 1.2rem; }
+        .tag-promocao { position: absolute; top: 15px; right: 15px; background: #fbbf24; color: #000; font-weight: 800; font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; }
+
+        .color-select-group { margin-bottom: 10px; }
+        .color-select-group label { font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 4px; }
+        .color-select-group select { width: 100%; padding: 6px; background: #1a2234; color: white; border: 1px solid var(--border-color); border-radius: 6px; }
+
+        .btn-add-cart { background: var(--accent-color); color: white; border: none; padding: 0.7rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.3s; width: 100%; margin-bottom: 8px; }
+        .btn-add-cart:hover { background: var(--accent-hover); }
+
+        .btn-secondary-cart { 
+            background: #10b981; color: white; border: none; padding: 0.7rem; 
+            border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.3s; 
+            width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; 
+        }
+        .btn-secondary-cart:hover { background: #059669; }
+
+        .cart-drawer { 
+            position: fixed; top: 0; right: 0; width: 100%; max-width: 500px; height: 100%; 
+            background: var(--bg-color); border-left: 1px solid var(--border-color); z-index: 2000; 
+            transform: translateX(100%); transition: transform 0.3s ease; padding: 2rem; 
+            display: flex; flex-direction: column; overflow-y: auto;
+        }
+        .cart-drawer.open { transform: translateX(0); }
+        
+        .overlay { position: fixed; top:0; left:0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1500; display: none; }
+        .overlay.open { display: block; }
+
+        .form-control { width: 100%; padding: 0.6rem; margin-bottom: 0.8rem; background: #1a2234; border: 1px solid var(--border-color); color: white; border-radius: 6px; font-size: 0.9rem; }
+        .cart-item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
+        
+        .payment-methods-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1rem; }
+        .payment-method-card {
+            background: #1a2234; border: 2px solid var(--border-color); border-radius: 8px;
+            padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.2s; color: var(--text-muted);
+        }
+        .payment-method-card i { font-size: 1.4rem; margin-bottom: 6px; display: block; }
+        .payment-method-card span { font-size: 0.85rem; font-weight: 600; display: block; }
+        .payment-method-card.selected { border-color: var(--accent-color); background: rgba(59, 130, 246, 0.1); color: var(--text-main); }
+
+        .card-form-group { margin-bottom: 10px; }
+        .card-form-group label { font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 3px; }
+
+        #toast-sucesso-pagamento {
+            position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
+            background: #10b981; color: white; padding: 16px 28px; border-radius: 12px;
+            font-weight: 700; z-index: 4000; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            font-size: 1.1rem; align-items: center; gap: 12px;
+        }
+
+        .chat-widget-btn {
+            position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px;
+            background: var(--accent-color); color: white; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-size: 1.6rem;
+            cursor: pointer; box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4); z-index: 2500;
+            transition: transform 0.3s, background 0.3s;
+        }
+        .chat-widget-btn:hover { transform: scale(1.1); background: var(--accent-hover); }
+
+        .chat-container {
+            position: fixed; bottom: 95px; right: 25px; width: 360px; height: 480px;
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 2500; display: flex; flex-direction: column;
+            overflow: hidden; transform: scale(0); transform-origin: bottom right; transition: transform 0.3s ease;
+        }
+        .chat-container.open { transform: scale(1); }
+
+        .chat-header {
+            background: #1a2234; padding: 1rem; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .chat-header h3 { font-size: 1rem; display: flex; align-items: center; gap: 8px; color: var(--text-main); }
+        .chat-header button { background: none; border: none; color: var(--text-muted); font-size: 1.1rem; cursor: pointer; }
+        .chat-header button:hover { color: white; }
+
+        .chat-body {
+            flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem;
+        }
+        .chat-msg { max-width: 85%; padding: 10px 14px; border-radius: 12px; line-height: 1.4; word-break: break-word; }
+        .chat-msg.bot { background: #1a2234; color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 2px; }
+        .chat-msg.user { background: var(--accent-color); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+
+        .chat-options { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+        .chat-opt-btn {
+            background: rgba(59, 130, 246, 0.15); border: 1px solid var(--accent-color); color: #60a5fa;
+            padding: 8px 12px; border-radius: 6px; text-align: left; cursor: pointer; font-weight: 600; font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+        .chat-opt-btn:hover { background: var(--accent-color); color: white; }
+
+        .chat-input-area {
+            padding: 10px; background: #1a2234; border-top: 1px solid var(--border-color); display: flex; gap: 8px;
+        }
+        .chat-input-area input {
+            flex: 1; padding: 8px 12px; background: var(--bg-color); border: 1px solid var(--border-color);
+            color: white; border-radius: 6px; font-size: 0.9rem; outline: none;
+        }
+        .chat-input-area button {
+            background: var(--accent-color); color: white; border: none; padding: 0 14px; border-radius: 6px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast-sucesso-pagamento">
+        <i class="fa-solid fa-circle-check" style="font-size: 1.5rem;"></i>
+        <span>🎉 Pedido realizado com sucesso! Chave Pix copiada.</span>
+    </div>
+
+    <script>
+        function tocarSomSucesso() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); 
+                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); 
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.5);
+            } catch(e) {}
+        }
+    </script>
+
+    <header>
+        <a href="#" class="logo" onclick="mostrarLoja(event)"><i class="fa-solid fa-microchip"></i> Next<span>Tech</span></a>
+        <nav>
+            <ul>
+                <li><a onclick="mostrarLoja(event)" class="active" id="nav-inicio"><i class="fa-solid fa-house"></i> Início</a></li>
+                <li><a onclick="filtrarProdutos(event, 'todos')">Produtos</a></li>
+                <li><a onclick="filtrarProdutos(event, 'celulares')">Celulares</a></li>
+                <li><a onclick="filtrarProdutos(event, 'projetores')">Projetores</a></li>
+                <li><a onclick="filtrarProdutos(event, 'televisao')">Televisão</a></li>
+                <li><a onclick="filtrarProdutos(event, 'audio')">Áudio</a></li>
+                <li><a onclick="abrirMeusPedidos(event)" id="nav-meus-pedidos" style="color: #60a5fa; font-weight: 600;"><i class="fa-solid fa-box-open"></i> Meus Pedidos</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <button class="cart-btn" onclick="toggleCart()">
+                <i class="fa-solid fa-cart-shopping"></i> Carrinho (<span id="cart-count">0</span>)
+            </button>
+            <a href="login.html" class="logout-btn" onclick="fazerLogout(event)">
+                <i class="fa-solid fa-right-from-bracket"></i> Sair
+            </a>
+        </div>
+    </header>
+
+    <div id="conteudo-loja">
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Tecnologia de Ponta ao Seu <span>Alcance</span></h1>
+                <p>Descubra a nova geração de eletrônicos projetados para elevar sua experiência.</p>
+                <a href="#produtos" class="btn-primary" style="display: inline-block; width: auto; margin-top: 1rem;">Explorar Produtos</a>
+            </div>
+            <div class="hero-image" id="hero-banner-container">
+                <img src="neymar.jpg" alt="NextTech com Neymar">
+            </div>
+        </section>
+
+        <section class="products-section" id="produtos">
+            <div class="products-grid" id="product-grid"></div>
+        </section>
+    </div>
+
+    <div id="status-pedidos" class="status-section">
+        <h2 style="margin-bottom: 1.5rem; font-size: 1.8rem;"><i class="fa-solid fa-box-open" style="color: var(--accent-color);"></i> Meus Pedidos Realizados</h2>
+        <div id="lista-meus-pedidos" style="display: grid; gap: 1rem;"></div>
+    </div>
+
+    <div class="chat-widget-btn" onclick="toggleChatBot()">
+        <i class="fa-solid fa-robot"></i>
+    </div>
+
+    <div class="chat-container" id="chat-container">
+        <div class="chat-header">
+            <h3><i class="fa-solid fa-robot" style="color: var(--accent-color);"></i> Atendente Virtual</h3>
+            <button onclick="toggleChatBot()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="chat-body" id="chat-body"></div>
+        <div class="chat-input-area" id="chat-input-area" style="display: none;">
+            <input type="text" id="chat-user-input" placeholder="Digite sua resposta..." onkeypress="verificarEnterChat(event)">
+            <button onclick="enviarMensagemTexto()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cart-drawer">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2>Seu Carrinho</h2>
+            <button onclick="toggleCart()" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <div id="cart-items-list" style="margin-bottom: 1rem;"></div>
+
+        <!-- Etapa 1: Dados de Entrega -->
+        <div id="etapa-dados-entrega">
+            <h4 style="margin-bottom: 0.5rem; font-size: 0.95rem;">Dados de Entrega</h4>
+            <input type="text" id="cli-nome" placeholder="Nome Completo" class="form-control" autocomplete="name">
+            <input type="text" id="cli-cep" placeholder="CEP (Apenas números)" class="form-control" maxlength="9" onblur="buscarCep(this.value)" autocomplete="postal-code">
+            <input type="text" id="cli-endereco" placeholder="Endereço Completo (Rua, Bairro, Cidade)" class="form-control" autocomplete="street-address">
+            <input type="text" id="cli-numero" placeholder="Número da Casa / Apto" class="form-control" autocomplete="address-line2">
+
+            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.1rem; margin: 1.5rem 0 1rem 0;">
+                <span>Total:</span>
+                <span id="cart-total" style="color: var(--accent-color);">R$ 0,00</span>
+            </div>
+
+            <button class="btn-primary" onclick="avancarParaFormasPagamento()">Escolher Forma de Pagamento</button>
+        </div>
+
+        <!-- Etapa 2: Seleção e preenchimento de Pagamento -->
+        <div id="etapa-pagamento-custom" style="display: none; margin-top: 1rem;">
+            <button onclick="voltarParaDadosEntrega()" style="background: none; border: none; color: var(--accent-color); cursor: pointer; margin-bottom: 1rem; font-weight: 600;">
+                <i class="fa-solid fa-arrow-left"></i> Voltar aos dados
+            </button>
+            <h4 style="margin-bottom: 0.8rem; font-size: 0.95rem;">Forma de Pagamento</h4>
+            
+            <div class="payment-methods-grid">
+                <div class="payment-method-card selected" id="metodo-pix" onclick="selecionarMetodo('pix')">
+                    <i class="fa-solid fa-qrcode"></i>
+                    <span>Pix</span>
+                </div>
+                <div class="payment-method-card" id="metodo-credito" onclick="selecionarMetodo('credito')">
+                    <i class="fa-solid fa-credit-card"></i>
+                    <span>Crédito</span>
+                </div>
+                <div class="payment-method-card" id="metodo-debito" onclick="selecionarMetodo('debito')">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span>Débito</span>
+                </div>
+            </div>
+
+            <!-- Área Dinâmica do Pix Integrada com o Backend -->
+            <div id="painel-pix" style="text-align: center; background: #1a2234; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                <p style="font-size: 0.9rem; margin-bottom: 10px; color: var(--text-muted);">Escaneie o QR Code ou copie o código Pix:</p>
+                <div id="qr-code-img-container" style="background: white; padding: 15px; display: inline-block; border-radius: 8px; margin-bottom: 10px;">
+                    <img id="qr-code-src" src="" alt="QR Code Pix" style="width: 150px; height: 150px; display: none;">
+                    <div id="qr-code-loading" style="color: #000; font-weight: 600; padding: 35px 10px; font-size: 0.85rem;">Gerando Pix Oficial...</div>
+                </div>
+                
+                <!-- Input para armazenar a string Copia e Cola gerada pelo MP -->
+                <input type="text" id="pix-copia-cola-text" style="width: 100%; padding: 6px; font-size: 0.8rem; background: #0b0f19; color: #fff; border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 10px;" readonly>
+
+                <button class="btn-secondary-cart" id="btn-copiar-pix" onclick="copiarPixCopiaCola()" style="margin-top: 5px; width: 100%; display: none;">
+                    <i class="fa-solid fa-copy"></i> Copiar Código Pix (Copia e Cola)
+                </button>
+            </div>
+
+            <!-- Área de Cartão (Crédito / Débito) -->
+            <div id="painel-cartao" style="display: none; background: #1a2234; padding: 1.2rem; border-radius: 8px; margin-bottom: 1rem;">
+                <div class="card-form-group">
+                    <label>Número do Cartão</label>
+                    <input type="text" id="card-number" placeholder="4111 2222 3333 4444" class="form-control" maxlength="19">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="card-form-group">
+                        <label>Validade (MM/AA)</label>
+                        <input type="text" id="card-expiry" placeholder="MM/AA" class="form-control" maxlength="5">
+                    </div>
+                    <div class="card-form-group">
+                        <label>CVV</label>
+                        <input type="text" id="card-cvv" placeholder="123" class="form-control" maxlength="4">
+                    </div>
+                </div>
+                <div class="card-form-group">
+                    <label>Nome no Cartão</label>
+                    <input type="text" id="card-holder" placeholder="Nome impresso no cartão" class="form-control">
+                </div>
+
+                <div class="card-form-group" id="grupo-parcelas">
+                    <label>Parcelamento (Sem Juros)</label>
+                    <select id="card-installments" class="form-control"></select>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="btn-finalizar-pagamento" onclick="processarPagamentoCustom()">Finalizar Pagamento</button>
+        </div>
+    </div>
+
+    <script>
+        let usuarioLogado = JSON.parse(localStorage.getItem('usuario_logado'));
+        if (!usuarioLogado) {
+            window.location.href = 'login.html';
+        }
+
+        let carrinho = usuarioLogado ? (usuarioLogado.carrinho || []) : [];
+        let categoriaAtual = 'todos';
+        let metodoPagamentoSelecionado = 'pix';
+        let pixIntervalId = null;
+        let idPagamentoAtual = null;
+
+        let chatAberto = false;
+        let etapaChat = 'inicio';
+        let pedidoParaCancelarTemp = null;
+        let tempEnderecoRua = '';
+        let tempCepConsultado = '';
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (usuarioLogado) {
+                if (document.getElementById('cli-nome')) document.getElementById('cli-nome').value = usuarioLogado.nome || '';
+                if (usuarioLogado.enderecoCompleto && document.getElementById('cli-endereco')) document.getElementById('cli-endereco').value = usuarioLogado.enderecoCompleto;
+                if (usuarioLogado.cepSalvo && document.getElementById('cli-cep')) document.getElementById('cli-cep').value = usuarioLogado.cepSalvo;
+                if (usuarioLogado.numeroSalvo && document.getElementById('cli-numero')) document.getElementById('cli-numero').value = usuarioLogado.numeroSalvo;
+            }
+            carregarLoja();
+            atualizarCarrinhoUI();
+        });
+
+        function abrirMeusPedidos(event) {
+            event.preventDefault();
+            document.querySelectorAll('nav ul li a').forEach(el => el.classList.remove('active'));
+            document.getElementById('nav-meus-pedidos').classList.add('active');
+            document.getElementById('conteudo-loja').style.display = 'none';
+            document.getElementById('status-pedidos').style.display = 'block';
+            carregarPedidosUsuario();
+        }
+
+        function mostrarLoja(event) {
+            if (event) event.preventDefault();
+            document.querySelectorAll('nav ul li a').forEach(el => el.classList.remove('active'));
+            document.getElementById('nav-inicio').classList.add('active');
+            document.getElementById('status-pedidos').style.display = 'none';
+            document.getElementById('conteudo-loja').style.display = 'block';
+            categoriaAtual = 'todos';
+            carregarLoja();
+        }
+
+        function carregarPedidosUsuario() {
+            const container = document.getElementById('lista-meus-pedidos');
+            const todosPedidos = JSON.parse(localStorage.getItem('pedidos_nexttech')) || [];
+            const meusPedidos = todosPedidos.filter(p => p.emailCliente === usuarioLogado.email);
+
+            if (meusPedidos.length > 0) {
+                container.innerHTML = '';
+                meusPedidos.forEach(p => {
+                    const nomesItens = p.itens && p.itens.length > 0 
+                        ? p.itens.map(i => `${i.nome} (${i.cor})`).join(', ') 
+                        : 'Nenhum item ativo';
+                    
+                    let statusDoPedido = p.statusEnvio || 'Processando / Aprovado';
+                    let estiloBadge = "background: #1e3a8a; color: #60a5fa;";
+                    let classeAnimada = "animado";
+                    let textoPrazo = `Prazo: ${p.prazo || '7 dias úteis'}`;
+                    let corPrazo = "#f59e0b";
+                    
+                    if (statusDoPedido.includes('Cancelada')) {
+                        estiloBadge = "background: rgba(239, 68, 68, 0.15); color: #ef4444; font-weight: 800;";
+                        classeAnimada = "";
+                        textoPrazo = "Reembolso em andamento";
+                        corPrazo = "#34d399";
+                    }
+
+                    let htmlCancelados = '';
+                    if (p.itensCancelados && p.itensCancelados.length > 0) {
+                        htmlCancelados += `
+                            <div class="secao-cancelados">
+                                <p style="font-size: 0.85rem; font-weight: 700; color: #ef4444; margin-bottom: 4px;">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Itens Cancelados:
+                                </p>
+                        `;
+                        p.itensCancelados.forEach(ic => {
+                            htmlCancelados += `
+                                <div class="item-cancelado-box">
+                                    <div>
+                                        <span style="font-weight: 600; color: #f87171;">${ic.nome} (${ic.cor})</span><br>
+                                        <small style="color: var(--text-muted); font-size: 0.75rem;">Cancelado em: ${ic.dataCancelamento}</small>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <span style="background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">
+                                            Aguarde 3 dias úteis para reembolso
+                                        </span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        htmlCancelados += `</div>`;
+                    }
+
+                    container.innerHTML += `
+                        <div class="card-pedido">
+                            <div class="card-pedido-header">
+                                <div>
+                                    <h4 style="color:var(--accent-color); margin-bottom: 4px;">Pedido #${p.id}</h4>
+                                    <p style="font-size: 0.9rem; margin-bottom: 4px;"><strong>Itens Ativos:</strong> ${nomesItens}</p>
+                                    <p style="font-size: 0.8rem; color: var(--text-muted);">Data: ${p.data} | <strong>Forma:</strong> ${p.pagamento.toUpperCase()}</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div class="status-badge ${classeAnimada}" style="${estiloBadge}">${statusDoPedido}</div>
+                                    <div style="font-size: 0.85rem; color: ${corPrazo}; font-weight: 600;">${textoPrazo}</div>
+                                </div>
+                            </div>
+                            ${htmlCancelados}
+                        </div>
+                    `;
+                });
+            } else {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 4rem 0; color: var(--text-muted);">
+                        <i class="fa-solid fa-box-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <p style="font-size: 1.1rem;">Você ainda não realizou nenhum pedido.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function salvarUsuarioNoStorage() {
+            if (!usuarioLogado) return;
+            localStorage.setItem('usuario_logado', JSON.stringify(usuarioLogado));
+            let usuarios = JSON.parse(localStorage.getItem('usuarios_nexttech')) || [];
+            let index = usuarios.findIndex(u => u.email === usuarioLogado.email);
+            if (index !== -1) {
+                usuarios[index] = usuarioLogado;
+                localStorage.setItem('usuarios_nexttech', JSON.stringify(usuarios));
+            }
+        }
+
+        function fazerLogout(event) {
+            if (event) event.preventDefault();
+            localStorage.removeItem('usuario_logado');
+            window.location.href = 'login.html';
+        }
+
+        function toggleCart() {
+            document.getElementById('cart-drawer').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('open');
+            voltarParaDadosEntrega();
+        }
+
+        function buscarCep(cep) {
+            let cepLimpo = cep.replace(/\D/g, '');
+            if (cepLimpo.length !== 8) return;
+
+            fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.erro) {
+                        let enderecoCompleto = `${data.logradouro}, ${data.bairro} - ${data.localidade}/${data.uf}`;
+                        document.getElementById('cli-endereco').value = enderecoCompleto;
+                        document.getElementById('cli-numero').focus();
+                        usuarioLogado.cepSalvo = cepLimpo;
+                        usuarioLogado.enderecoCompleto = enderecoCompleto;
+                        salvarUsuarioNoStorage();
+                    } else {
+                        alert('CEP não encontrado.');
+                    }
+                })
+                .catch(error => console.error('Erro ao buscar CEP:', error));
+        }
+
+        function atualizarBannerDaHome() {
+            const banners = JSON.parse(localStorage.getItem('banners_por_categoria')) || {};
+            const bannerContainer = document.getElementById('hero-banner-container');
+            if (categoriaAtual === 'todos') {
+                bannerContainer.innerHTML = `<img src="neymar.jpg" alt="NextTech com Neymar">`;
+            } else if (banners[categoriaAtual]) {
+                bannerContainer.innerHTML = `<img src="${banners[categoriaAtual]}" alt="Banner ${categoriaAtual}">`;
+            } else {
+                bannerContainer.innerHTML = `<img src="neymar.jpg" alt="NextTech com Neymar">`;
+            }
+        }
+
+        function carregarLoja() {
+            atualizarBannerDaHome();
+            const grid = document.getElementById('product-grid');
+            let produtosSalvos = JSON.parse(localStorage.getItem('produtos_nexttech')) || [];
+            
+            grid.innerHTML = '';
+            produtosSalvos.forEach((p, index) => {
+                if (categoriaAtual === 'todos' || p.categoria === categoriaAtual) {
+                    let seletorCorHtml = '';
+                    if (p.categoria === 'celulares') {
+                        seletorCorHtml = `
+                            <div class="color-select-group">
+                                <label>Cor Desejada:</label>
+                                <select id="cor-${index}">
+                                    <option value="Vermelho">Vermelho</option>
+                                    <option value="Azul">Azul</option>
+                                    <option value="Roxo">Roxo</option>
+                                    <option value="Preto">Preto</option>
+                                    <option value="Prata">Prata</option>
+                                </select>
+                            </div>
+                        `;
+                    }
+
+                    let precoHtml = '';
+                    let precoEfetivo = p.preco;
+
+                    if (p.promocao && p.precoPromo && p.precoPromo > 0) {
+                        precoEfetivo = p.precoPromo;
+                        precoHtml = `
+                            <div class="tag-promocao">Promoção</div>
+                            <p><span class="preco-antigo">R$ ${parseFloat(p.preco).toFixed(2)}</span> <span class="preco-novo">R$ ${parseFloat(p.precoPromo).toFixed(2)}</span></p>
+                        `;
+                    } else {
+                        precoHtml = `<p class="preco-normal">R$ ${parseFloat(p.preco).toFixed(2)}</p>`;
+                    }
+
+                    grid.innerHTML += `
+                        <div class="product-card">
+                            <img src="${p.imagem}" class="product-img" alt="${p.nome}">
+                            <div>
+                                <h3>${p.nome}</h3>
+                                ${precoHtml}
+                            </div>
+                            ${seletorCorHtml}
+                            <button class="btn-add-cart" onclick="comprarAgora('${p.nome}', ${precoEfetivo}, 'cor-${index}')">Comprar</button>
+                            <button class="btn-secondary-cart" onclick="adicionarApenasAoCarrinho('${p.nome}', ${precoEfetivo}, 'cor-${index}')">
+                                <i class="fa-solid fa-cart-plus" style="font-size: 0.85rem;"></i> Adicionar ao Carrinho
+                            </button>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        function comprarAgora(nome, preco, corId) {
+            adicionarApenasAoCarrinho(nome, preco, corId);
+            toggleCart();
+        }
+
+        function adicionarApenasAoCarrinho(nome, preco, corId) {
+            let corSelecionada = 'Padrão';
+            if (corId) {
+                const selectElement = document.getElementById(corId);
+                if (selectElement) corSelecionada = selectElement.value;
+            }
+
+            carrinho.push({ nome, preco, cor: corSelecionada });
+            usuarioLogado.carrinho = carrinho;
+            salvarUsuarioNoStorage();
+            atualizarCarrinhoUI();
+        }
+
+        function atualizarCarrinhoUI() {
+            document.getElementById('cart-count').innerText = carrinho.length;
+            const list = document.getElementById('cart-items-list');
+            list.innerHTML = '';
+
+            let total = 0;
+            carrinho.forEach((item, index) => {
+                total += item.preco;
+                list.innerHTML += `
+                    <div class="cart-item-row">
+                        <div>
+                            <strong>${item.nome}</strong><br>
+                            <small style="color:var(--text-muted)">Cor: ${item.cor}</small>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="color:var(--accent-color)">R$ ${item.preco.toFixed(2)}</span><br>
+                            <button onclick="removerItem(${index})" style="background:none; border:none; color:#ef4444; font-size:0.75rem; cursor:pointer;">Remover</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('cart-total').innerText = `R$ ${total.toFixed(2)}`;
+        }
+
+        function removerItem(index) {
+            carrinho.splice(index, 1);
+            usuarioLogado.carrinho = carrinho;
+            salvarUsuarioNoStorage();
+            atualizarCarrinhoUI();
+        }
+
+        function voltarParaDadosEntrega() {
+            if (pixIntervalId) clearInterval(pixIntervalId);
+            document.getElementById('etapa-pagamento-custom').style.display = 'none';
+            document.getElementById('etapa-dados-entrega').style.display = 'block';
+        }
+
+        function avancarParaFormasPagamento() {
+            const nome = document.getElementById('cli-nome').value;
+            const cep = document.getElementById('cli-cep').value;
+            const endereco = document.getElementById('cli-endereco').value;
+            const numero = document.getElementById('cli-numero').value;
+
+            if (!nome || !cep || !endereco || !numero) {
+                alert('Por favor, preencha todos os dados de entrega!');
+                return;
+            }
+
+            if (carrinho.length === 0) {
+                alert('Seu carrinho está vazio!');
+                return;
+            }
+
+            usuarioLogado.cepSalvo = cep;
+            usuarioLogado.enderecoCompleto = endereco;
+            usuarioLogado.numeroSalvo = numero;
+            salvarUsuarioNoStorage();
+
+            document.getElementById('etapa-dados-entrega').style.display = 'none';
+            document.getElementById('etapa-pagamento-custom').style.display = 'block';
+
+            selecionarMetodo('pix');
+        }
+
+        function selecionarMetodo(metodo) {
+            if (pixIntervalId) clearInterval(pixIntervalId);
+            metodoPagamentoSelecionado = metodo;
+
+            document.querySelectorAll('.payment-method-card').forEach(el => el.classList.remove('selected'));
+            document.getElementById(`metodo-${metodo}`).classList.add('selected');
+
+            const painelPix = document.getElementById('painel-pix');
+            const painelCartao = document.getElementById('painel-cartao');
+            const grupoParcelas = document.getElementById('grupo-parcelas');
+            const btnFinalizar = document.getElementById('btn-finalizar-pagamento');
+
+            if (metodo === 'pix') {
+                painelPix.style.display = 'block';
+                painelCartao.style.display = 'none';
+                btnFinalizar.style.display = 'none'; 
+                gerarPixRealMercadoPago();
+            } else if (metodo === 'credito') {
+                painelPix.style.display = 'none';
+                painelCartao.style.display = 'block';
+                grupoParcelas.style.display = 'block';
+                btnFinalizar.style.display = 'block';
+                btnFinalizar.innerText = 'Pagar com Cartão de Crédito';
+                popularParcelas();
+            } else if (metodo === 'debito') {
+                painelPix.style.display = 'none';
+                painelCartao.style.display = 'block';
+                grupoParcelas.style.display = 'none';
+                btnFinalizar.style.display = 'block';
+                btnFinalizar.innerText = 'Pagar com Cartão de Débito';
+            }
+        }
+
+        function popularParcelas() {
+            const total = carrinho.reduce((acc, i) => acc + i.preco, 0);
+            const select = document.getElementById('card-installments');
+            select.innerHTML = '';
+            for (let i = 1; i <= 10; i++) {
+                let valorParcela = total / i;
+                select.innerHTML += `<option value="${i}">${i}x de R$ ${valorParcela.toFixed(2)} sem juros</option>`;
+            }
+        }
+
+        // CHAMADA REAL PARA O BACKEND CRIAR O PIX NO MERCADO PAGO
+        async function gerarPixRealMercadoPago() {
+            document.getElementById('qr-code-src').style.display = 'none';
+            document.getElementById('qr-code-loading').style.display = 'block';
+            document.getElementById('btn-copiar-pix').style.display = 'none';
+            document.getElementById('pix-copia-cola-text').value = '';
+
+            const total = carrinho.reduce((acc, item) => acc + item.preco, 0);
+
+            const dadosPagamento = {
+                formData: {
+                    transaction_amount: total,
+                    payment_method_id: 'pix',
+                    payer: {
+                        email: usuarioLogado.email || 'comprador@email.com',
+                        identification: {
+                            type: 'CPF',
+                            number: '12345678909'
+                        }
+                    }
+                },
+                dadosEntrega: {
+                    nome: document.getElementById('cli-nome').value,
+                    cep: document.getElementById('cli-cep').value,
+                    endereco: document.getElementById('cli-endereco').value,
+                    numero: document.getElementById('cli-numero').value,
+                    email: usuarioLogado.email
+                }
+            };
+
+            try {
+                const response = await fetch('/api/process-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dadosPagamento)
+                });
+                
+                const data = await response.json();
+
+                if (response.ok && data.point_of_interaction) {
+                    const poi = data.point_of_interaction.transaction_data;
+                    idPagamentoAtual = data.id;
+
+                    const qrCodeBase64 = poi.qr_code_base64;
+                    const copiaCola = poi.qr_code;
+
+                    document.getElementById('pix-copia-cola-text').value = copiaCola;
+
+                    if (qrCodeBase64) {
+                        document.getElementById('qr-code-src').src = `data:image/png;base64,${qrCodeBase64}`;
+                    } else {
+                        document.getElementById('qr-code-src').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(copiaCola)}`;
+                    }
+
+                    document.getElementById('qr-code-src').style.display = 'inline-block';
+                    document.getElementById('qr-code-loading').style.display = 'none';
+                    document.getElementById('btn-copiar-pix').style.display = 'flex';
+
+                    // Iniciar checagem automática do status do pagamento Pix
+                    iniciarVerificacaoStatusPix(idPagamentoAtual);
+
+                } else {
+                    alert('Erro ao gerar Pix: ' + (data.error || 'Verifique suas credenciais no painel admin'));
+                    document.getElementById('qr-code-loading').innerText = 'Erro ao gerar Pix';
+                }
+            } catch (error) {
+                console.error('Erro de conexão:', error);
+                document.getElementById('qr-code-loading').innerText = 'Erro de conexão com o servidor';
+            }
+        }
+
+        function iniciarVerificacaoStatusPix(paymentId) {
+            if (pixIntervalId) clearInterval(pixIntervalId);
+            pixIntervalId = setInterval(async () => {
+                try {
+                    const res = await fetch(`/api/check-payment/${paymentId}`);
+                    const dados = await res.json();
+                    if (dados.status === 'approved') {
+                        clearInterval(pixIntervalId);
+                        finalizarPedidoComSucesso('pix');
+                    }
+                } catch (e) {}
+            }, 4000);
+        }
+
+        function copiarPixCopiaCola() {
+            const inputCopiaCola = document.getElementById('pix-copia-cola-text');
+            inputCopiaCola.select();
+            inputCopiaCola.setSelectionRange(0, 99999);
+            
+            try {
+                navigator.clipboard.writeText(inputCopiaCola.value).then(() => {
+                    finalizarPedidoComSucesso('pix');
+                }).catch(() => {
+                    document.execCommand('copy');
+                    finalizarPedidoComSucesso('pix');
+                });
+            } catch (err) {
+                document.execCommand('copy');
+                finalizarPedidoComSucesso('pix');
+            }
+        }
+
+        function processarPagamentoCustom() {
+            const numCartao = document.getElementById('card-number').value;
+            const validade = document.getElementById('card-expiry').value;
+            const cvv = document.getElementById('card-cvv').value;
+            const nomeCartao = document.getElementById('card-holder').value;
+
+            if (!numCartao || !validade || !cvv || !nomeCartao) {
+                alert('Por favor, preencha todos os dados do cartão!');
+                return;
+            }
+
+            finalizarPedidoComSucesso(metodoPagamentoSelecionado);
+        }
+
+        function finalizarPedidoComSucesso(metodoUsado) {
+            if (pixIntervalId) clearInterval(pixIntervalId);
+
+            const total = carrinho.reduce((acc, item) => acc + item.preco, 0);
+            const novoPedido = {
+                id: Date.now(),
+                cliente: document.getElementById('cli-nome').value,
+                emailCliente: usuarioLogado.email,
+                cep: document.getElementById('cli-cep').value,
+                numero: document.getElementById('cli-numero').value,
+                endereco: document.getElementById('cli-endereco').value,
+                pagamento: metodoUsado,
+                itens: [...carrinho],
+                itensCancelados: [],
+                total,
+                statusEnvio: 'Aprovado',
+                prazo: '7 dias úteis',
+                data: new Date().toLocaleString()
+            };
+
+            let pedidos = JSON.parse(localStorage.getItem('pedidos_nexttech')) || [];
+            pedidos.unshift(novoPedido);
+            localStorage.setItem('pedidos_nexttech', JSON.stringify(pedidos));
+
+            carrinho = [];
+            usuarioLogado.carrinho = carrinho;
+            salvarUsuarioNoStorage();
+            atualizarCarrinhoUI();
+            toggleCart();
+
+            tocarSomSucesso();
+            const toast = document.getElementById('toast-sucesso-pagamento');
+            toast.style.display = 'flex';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 4000);
+        }
+
+        function filtrarProdutos(event, categoria) {
+            event.preventDefault();
+            mostrarLoja(); 
+            document.querySelectorAll('nav ul li a').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
+            categoriaAtual = categoria;
+            carregarLoja();
+        }
+
+        function toggleChatBot() {
+            chatAberto = !chatAberto;
+            const container = document.getElementById('chat-container');
+            if (chatAberto) {
+                container.classList.add('open');
+                if (etapaChat === 'inicio') iniciarChatBot();
+            } else {
+                container.classList.remove('open');
+            }
+        }
+
+        function adicionarMensagemChat(texto, remetente = 'bot', htmlExtra = '') {
+            const body = document.getElementById('chat-body');
+            body.innerHTML += `
+                <div class="chat-msg ${remetente}">
+                    ${texto}
+                    ${htmlExtra}
+                </div>
+            `;
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function iniciarChatBot() {
+            const nomeCliente = usuarioLogado ? usuarioLogado.nome : 'Cliente';
+            document.getElementById('chat-body').innerHTML = '';
+            adicionarMensagemChat(`Bem-vindo, ${nomeCliente} 😊! Escolha uma das opções abaixo:`, 'bot');
+            
+            const opcoesHtml = `
+                <div class="chat-options" id="menu-opcoes-inicial">
+                    <button class="chat-opt-btn" onclick="escolherOpcaoChat('registrar_endereco')">📍 Registrar Endereço</button>
+                    <button class="chat-opt-btn" onclick="escolherOpcaoChat('atualizar_cep')">📮 Atualizar CEP</button>
+                    <button class="chat-opt-btn" onclick="escolherOpcaoChat('cancelar')" style="color: #ef4444; border-color: #ef4444;">❌ Cancelar Compra</button>
+                </div>
+            `;
+            adicionarMensagemChat('', 'bot', opcoesHtml);
+            document.getElementById('chat-input-area').style.display = 'none';
+        }
+
+        function escolherOpcaoChat(opcao) {
+            const menu = document.getElementById('menu-opcoes-inicial');
+            if (menu) menu.style.display = 'none';
+
+            if (opcao === 'registrar_endereco') {
+                adicionarMensagemChat("📍 Registrar Endereço", "user");
+                adicionarMensagemChat("Por favor, digite o seu **Endereço** (Rua, Bairro, Cidade):", "bot");
+                etapaChat = 'reg_aguardando_endereco';
+                document.getElementById('chat-input-area').style.display = 'flex';
+                document.getElementById('chat-user-input').focus();
+            } 
+            else if (opcao === 'atualizar_cep') {
+                adicionarMensagemChat("📮 Atualizar CEP", "user");
+                adicionarMensagemChat("Por favor, digite o seu **CEP** correto (apenas números):", "bot");
+                etapaChat = 'cep_aguardando_cep';
+                document.getElementById('chat-input-area').style.display = 'flex';
+                document.getElementById('chat-user-input').focus();
+            } 
+            else if (opcao === 'cancelar') {
+                adicionarMensagemChat("❌ Cancelar Compra", "user");
+                let pedidos = JSON.parse(localStorage.getItem('pedidos_nexttech')) || [];
+                let pedidosAtivos = pedidos.filter(p => p.emailCliente === usuarioLogado.email && p.itens && p.itens.length > 0);
+                
+                if (pedidosAtivos.length === 0) {
+                    adicionarMensagemChat("⚠️ Nenhum pedido ativo encontrado para cancelamento.", "bot");
+                    setTimeout(() => iniciarChatBot(), 3500);
+                    return;
+                }
+
+                let botoesPedidosHtml = `<div class="chat-options" id="menu-selecionar-pedido-cancelar">`;
+                pedidosAtivos.forEach(p => {
+                    let resumoItens = p.itens.map(i => `${i.nome} (${i.cor})`).join(', ');
+                    botoesPedidosHtml += `<button class="chat-opt-btn" onclick="selecionarPedidoParaCancelar(${p.id})">📦 Pedido #${p.id} - ${resumoItens} (R$ ${p.total.toFixed(2)})</button>`;
+                });
+                botoesPedidosHtml += `</div>`;
+
+                adicionarMensagemChat("Selecione abaixo qual **pedido** deseja gerenciar para cancelamento:", "bot", botoesPedidosHtml);
+            }
+        }
+
+        function selecionarPedidoParaCancelar(idPedido) {
+            let pedidos = JSON.parse(localStorage.getItem('pedidos_nexttech')) || [];
+            let pedidoEscolhido = pedidos.find(p => p.id === idPedido);
+            if (!pedidoEscolhido) return;
+
+            pedidoParaCancelarTemp = pedidoEscolhido;
+            const menuPedidos = document.getElementById('menu-selecionar-pedido-cancelar');
+            if (menuPedidos) menuPedidos.style.display = 'none';
+
+            adicionarMensagemChat(`Pedido #${pedidoEscolhido.id}`, "user");
+
+            let botoesItensHtml = `<div class="chat-options" id="menu-selecionar-item-cancelar">`;
+            pedidoEscolhido.itens.forEach((item, idx) => {
+                botoesItensHtml += `<button class="chat-opt-btn" onclick="selecionarItemParaCancelar(${idx})">🏷️ ${item.nome} (${item.cor}) - R$ ${item.preco.toFixed(2)}</button>`;
+            });
+            botoesItensHtml += `</div>`;
+
+            adicionarMensagemChat("Selecione qual item deste pedido deseja cancelar:", "bot", botoesItensHtml);
+        }
+
+        function selecionarItemParaCancelar(indexItem) {
+            const menuItens = document.getElementById('menu-selecionar-item-cancelar');
+            if (menuItens) menuItens.style.display = 'none';
+
+            let itemRemovido = pedidoParaCancelarTemp.itens.splice(indexItem, 1)[0];
+            itemRemovido.dataCancelamento = new Date().toLocaleString();
+
+            if (!pedidoParaCancelarTemp.itensCancelados) pedidoParaCancelarTemp.itensCancelados = [];
+            pedidoParaCancelarTemp.itensCancelados.push(itemRemovido);
+
+            let pedidos = JSON.parse(localStorage.getItem('pedidos_nexttech')) || [];
+            let indexPedido = pedidos.findIndex(p => p.id === pedidoParaCancelarTemp.id);
+
+            if (pedidoParaCancelarTemp.itens.length === 0) {
+                if (indexPedido !== -1) {
+                    pedidos[indexPedido].statusEnvio = '❌ Compra Cancelada';
+                    pedidos[indexPedido].itens = [];
+                    pedidos[indexPedido].itensCancelados = pedidoParaCancelarTemp.itensCancelados;
+                    localStorage.setItem('pedidos_nexttech', JSON.stringify(pedidos));
+                }
+            } else {
+                if (indexPedido !== -1) {
+                    pedidos[indexPedido].itens = pedidoParaCancelarTemp.itens;
+                    pedidos[indexPedido].itensCancelados = pedidoParaCancelarTemp.itensCancelados;
+                    pedidos[indexPedido].total = pedidoParaCancelarTemp.itens.reduce((acc, i) => acc + i.preco, 0);
+                    localStorage.setItem('pedidos_nexttech', JSON.stringify(pedidos));
+                }
+            }
+
+            adicionarMensagemChat("Item cancelado com sucesso! Digite o **motivo do cancelamento**:", "bot");
+            etapaChat = 'aguardando_motivo_cancelamento';
+            document.getElementById('chat-input-area').style.display = 'flex';
+            document.getElementById('chat-user-input').focus();
+        }
+
+        function verificarEnterChat(event) {
+            if (event.key === 'Enter') enviarMensagemTexto();
+        }
+
+        function enviarMensagemTexto() {
+            const input = document.getElementById('chat-user-input');
+            const texto = input.value.trim();
+            if (!texto) return;
+
+            adicionarMensagemChat(texto, 'user');
+            input.value = '';
+            document.getElementById('chat-input-area').style.display = 'none';
+
+            if (etapaChat === 'reg_aguardando_endereco') {
+                tempEnderecoRua = texto;
+                adicionarMensagemChat("Agora, digite o **número** e se é **Casa** ou **Apt** (Ex: Casa 2 ou Apt 101):", "bot");
+                etapaChat = 'reg_aguardando_numero_tipo';
+                document.getElementById('chat-input-area').style.display = 'flex';
+                document.getElementById('chat-user-input').focus();
+            }
+            else if (etapaChat === 'reg_aguardando_numero_tipo') {
+                let enderecoFinal = `${tempEnderecoRua}, ${texto}`;
+                usuarioLogado.enderecoCompleto = enderecoFinal;
+                usuarioLogado.numeroSalvo = texto;
+                salvarUsuarioNoStorage();
+
+                if (document.getElementById('cli-endereco')) document.getElementById('cli-endereco').value = enderecoFinal;
+                if (document.getElementById('cli-numero')) document.getElementById('cli-numero').value = texto;
+
+                adicionarMensagemChat(`Endereço salvo com sucesso! 🏠✨<br><strong>${enderecoFinal}</strong>`, "bot");
+                setTimeout(() => iniciarChatBot(), 3000);
+            }
+            else if (etapaChat === 'cep_aguardando_cep') {
+                let cepLimpo = texto.replace(/\D/g, '');
+                if (cepLimpo.length !== 8) {
+                    adicionarMensagemChat("CEP inválido! Digite um CEP com 8 dígitos:", "bot");
+                    document.getElementById('chat-input-area').style.display = 'flex';
+                    return;
+                }
+                tempCepConsultado = cepLimpo;
+
+                fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.erro) {
+                            tempEnderecoRua = `${data.logradouro}, ${data.bairro} - ${data.localidade}/${data.uf}`;
+                            let confirmHtml = `
+                                <div style="background: var(--bg-color); padding: 10px; border-radius: 8px; margin: 6px 0; border: 1px solid var(--border-color); font-size: 0.85rem;">
+                                    📍 <strong>${tempEnderecoRua}</strong>
+                                </div>
+                                <p>Este é o endereço correto?</p>
+                                <div class="chat-options" id="menu-confirma-cep" style="margin-top: 8px;">
+                                    <button class="chat-opt-btn" onclick="responderConfirmacaoCep(true)">✅ Sim, está correto</button>
+                                    <button class="chat-opt-btn" onclick="responderConfirmacaoCep(false)" style="color: #ef4444; border-color: #ef4444;">❌ Não, redigitar CEP</button>
+                                </div>
+                            `;
+                            adicionarMensagemChat("Encontramos este endereço:", "bot", confirmHtml);
+                        } else {
+                            adicionarMensagemChat("CEP não encontrado. Tente novamente:", "bot");
+                            etapaChat = 'cep_aguardando_cep';
+                            document.getElementById('chat-input-area').style.display = 'flex';
+                        }
+                    })
+                    .catch(() => {
+                        adicionarMensagemChat("Erro ao buscar CEP. Tente novamente:", "bot");
+                        setTimeout(() => iniciarChatBot(), 2000);
+                    });
+            }
+            else if (etapaChat === 'cep_aguardando_numero') {
+                let enderecoCompleto = `${tempEnderecoRua}, ${texto}`;
+                usuarioLogado.cepSalvo = tempCepConsultado;
+                usuarioLogado.enderecoCompleto = enderecoCompleto;
+                usuarioLogado.numeroSalvo = texto;
+                salvarUsuarioNoStorage();
+
+                if (document.getElementById('cli-cep')) document.getElementById('cli-cep').value = tempCepConsultado;
+                if (document.getElementById('cli-endereco')) document.getElementById('cli-endereco').value = enderecoCompleto;
+                if (document.getElementById('cli-numero')) document.getElementById('cli-numero').value = texto;
+
+                adicionarMensagemChat(`CEP e endereço atualizados! 🚀<br><strong>${enderecoCompleto}</strong>`, "bot");
+                setTimeout(() => iniciarChatBot(), 3500);
+            }
+            else if (etapaChat === 'aguardando_motivo_cancelamento') {
+                adicionarMensagemChat("Motivo do cancelamento registrado. 📝 Reembolso em até 3 dias úteis.", "bot");
+                setTimeout(() => iniciarChatBot(), 3500);
+            }
+        }
+
+        function responderConfirmacaoCep(confirmado) {
+            const menuC = document.getElementById('menu-confirma-cep');
+            if (menuC) menuC.style.display = 'none';
+
+            if (confirmado) {
+                adicionarMensagemChat("Sim, está correto", "user");
+                adicionarMensagemChat("Digite o **número da casa ou apartamento**:", "bot");
+                etapaChat = 'cep_aguardando_numero';
+                document.getElementById('chat-input-area').style.display = 'flex';
+                document.getElementById('chat-user-input').focus();
+            } else {
+                adicionarMensagemChat("Não, redigitar CEP", "user");
+                adicionarMensagemChat("Digite o novo CEP correto (apenas números):", "bot");
+                etapaChat = 'cep_aguardando_cep';
+                document.getElementById('chat-input-area').style.display = 'flex';
+                document.getElementById('chat-user-input').focus();
+            }
+        }
+    </script>
+</body>
+</html>
