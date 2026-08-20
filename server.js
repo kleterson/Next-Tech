@@ -140,6 +140,28 @@ app.get('/api/check-payment/:id', async (req, res) => {
 });
 
 // ==========================================
+// ROTAS DE PRODUTOS (Sincronizado PC e Celular)
+// ==========================================
+let produtosItems = [];
+
+app.get('/api/produtos', (req, res) => {
+    res.json(produtosItems);
+});
+
+app.post('/api/produtos', (req, res) => {
+    const { id, name, price, image, description } = req.body;
+    const novoProduto = {
+        id: id || Date.now().toString(),
+        name,
+        price: Number(price),
+        image: image || '',
+        description: description || ''
+    };
+    produtosItems.push(novoProduto);
+    res.json({ success: true, message: 'Produto cadastrado com sucesso!', produto: novoProduto });
+});
+
+// ==========================================
 // ROTAS DO CARRINHO
 // ==========================================
 let cartItems = [];
