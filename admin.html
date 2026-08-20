@@ -1,3 +1,4 @@
+<!-- Copie o conteúdo abaixo e substitua no seu arquivo admin.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -304,10 +305,8 @@
             const debito = document.getElementById('ativa-debito').checked;
             const pix = document.getElementById('ativa-pix').checked;
             
-            // 1. Salva localmente para persistência visual imediata
             localStorage.setItem('config_pagamento', JSON.stringify({ token, publicKey, credito, debito, pix }));
 
-            // 2. Envia para o servidor backend em produção (Render)
             try {
                 const response = await fetch('/api/update-token', {
                     method: 'POST',

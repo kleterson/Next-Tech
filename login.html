@@ -1,3 +1,4 @@
+<!-- Copie o conteúdo abaixo e substitua no seu arquivo login.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -58,7 +59,6 @@
         
         label { font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 4px; }
 
-        /* Estilo para a opção "Lembrar de mim" */
         .remember-container {
             display: flex;
             align-items: center;
@@ -82,241 +82,107 @@
         .link-acao a { color: var(--accent-color); text-decoration: none; font-weight: 600; cursor: pointer; }
         .link-acao a:hover { text-decoration: underline; }
 
-        /* Sistema de Alertas Modernos (Toasts) */
         #toast-container {
             position: fixed;
             top: 30px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            pointer-events: none;
         }
-
-        .toast {
-            background: #1f2937;
-            color: white;
-            padding: 1rem 1.8rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 500;
-            font-size: 0.95rem;
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: auto;
-            border-left: 5px solid var(--accent-color);
-        }
-
-        .toast.mostrar {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .toast.sucesso { border-left-color: #10b981; }
-        .toast.erro { border-left-color: #ef4444; }
-        .toast.aviso { border-left-color: #f59e0b; }
-
-        .toast.sucesso i { color: #10b981; }
-        .toast.erro i { color: #ef4444; }
-        .toast.aviso i { color: #f59e0b; }
     </style>
 </head>
 <body>
 
-    <!-- Container das Notificações Modernas -->
     <div id="toast-container"></div>
 
-    <!-- Lado Esquerdo -->
     <div class="left-side">
-        <div style="font-size: 0.8rem; color: var(--text-muted); z-index: 2; margin-top: auto;">
-            &copy; 2026 NextTech. Todos os direitos reservados.
+        <div class="logo-left"><i class="fa-solid fa-microchip"></i> Next<span>Tech</span></div>
+        <div style="z-index: 2;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Conecte-se com o <br>futuro agora.</h2>
+            <p style="color: var(--text-muted);">A maior loja de eletrônicos do Brasil.</p>
         </div>
     </div>
 
-    <!-- Lado Direito -->
     <div class="right-side">
-
-        <!-- Logo e Chamada no Topo -->
-        <div style="text-align: center; margin-bottom: 2rem;">
-            <div class="logo-left" style="justify-content: center; font-size: 2rem; margin-bottom: 0.5rem;">
-                <i class="fa-solid fa-microchip"></i> Next<span>Tech</span>
-            </div>
-            <p style="color: var(--text-muted); font-size: 0.85rem;">Tecnologia de Ponta ao Seu Alcance</p>
-        </div>
-
-        <!-- Tela de Login -->
-        <div id="tela-login" class="form-container active">
-            <h3 style="text-align: center;">Bem-vindo</h3>
-            <p class="subtitle" style="text-align: center;">Entre com seus dados para acessar sua conta.</p>
-
+        <!-- FORM LOGIN -->
+        <div id="form-login" class="form-container active">
+            <h3>Bem-vindo de volta</h3>
+            <p class="subtitle">Faça login para continuar suas compras.</p>
             <label>E-mail</label>
-            <!-- autocomplete="off" impede o navegador de preencher sozinho -->
-            <input type="email" id="login-email" class="form-control" placeholder="seu@email.com" autocomplete="off">
-
+            <input type="email" id="login-email" class="form-control" placeholder="nome@exemplo.com">
             <label>Senha</label>
-            <input type="password" id="login-senha" class="form-control" placeholder="••••••••" autocomplete="new-password">
-
-            <!-- Opção para o cliente permitir salvar -->
+            <input type="password" id="login-senha" class="form-control" placeholder="••••••••">
             <label class="remember-container">
-                <input type="checkbox" id="lembrar-me"> Lembrar meus dados neste aparelho
+                <input type="checkbox"> Lembrar de mim
             </label>
-
             <button class="btn-primary" onclick="fazerLogin()">Entrar</button>
-
-            <div class="link-acao">
-                Não tem uma conta? <a onclick="mostrarTela('tela-cadastro')">Cadastre aqui</a>
-            </div>
+            <p class="link-acao">Ainda não tem uma conta? <a onclick="trocarForm('cadastro')">Cadastre-se</a></p>
         </div>
 
-        <!-- Tela de Cadastro -->
-        <div id="tela-cadastro" class="form-container">
-            <h3 style="text-align: center;">Crie sua conta</h3>
-            <p class="subtitle" style="text-align: center;">Preencha os campos abaixo para se cadastrar.</p>
-
+        <!-- FORM CADASTRO -->
+        <div id="form-cadastro" class="form-container">
+            <h3>Crie sua conta</h3>
+            <p class="subtitle">Junte-se à NextTech e aproveite as ofertas.</p>
             <label>Nome Completo</label>
-            <input type="text" id="cad-nome" class="form-control" placeholder="Seu nome completo" autocomplete="off">
-
+            <input type="text" id="cad-nome" class="form-control" placeholder="Seu nome">
             <label>E-mail</label>
-            <input type="email" id="cad-email" class="form-control" placeholder="seu@email.com" autocomplete="off">
-
-            <label>Telefone</label>
-            <input type="text" id="cad-telefone" class="form-control" placeholder="(00) 00000-0000" autocomplete="off">
-
+            <input type="email" id="cad-email" class="form-control" placeholder="nome@exemplo.com">
             <label>Senha</label>
-            <input type="password" id="cad-senha" class="form-control" placeholder="Crie uma senha forte" autocomplete="new-password">
-
-            <button class="btn-primary" onclick="fazerCadastro()">Finalizar Cadastro</button>
-
-            <div class="link-acao">
-                Já tem uma conta? <a onclick="mostrarTela('tela-login')">Faça login</a>
-            </div>
+            <input type="password" id="cad-senha" class="form-control" placeholder="••••••••">
+            <button class="btn-primary" onclick="fazerCadastro()">Criar Conta</button>
+            <p class="link-acao">Já possui conta? <a onclick="trocarForm('login')">Entrar</a></p>
         </div>
-
     </div>
 
     <script>
-        // Limpa os campos automaticamente ao carregar a página para garantir que venham vazios
-        window.onload = function() {
-            document.getElementById('login-email').value = '';
-            document.getElementById('login-senha').value = '';
-            
-            // Verifica se o usuário já tinha optado por salvar anteriormente
-            const salvo = localStorage.getItem('usuario_lembrado');
-            if (salvo) {
-                document.getElementById('login-email').value = salvo;
-                document.getElementById('lembrar-me').checked = true;
-            }
-        };
-
-        function mostrarTela(idTela) {
-            document.querySelectorAll('.form-container').forEach(el => el.classList.remove('active'));
-            document.getElementById(idTela).classList.add('active');
+        function trocarForm(tipo) {
+            document.getElementById('form-login').classList.remove('active');
+            document.getElementById('form-cadastro').classList.remove('active');
+            document.getElementById('form-' + tipo).classList.add('active');
         }
 
-        function mostrarMensagem(mensagem, tipo = 'sucesso') {
+        function mostrarToast(mensagem, tipo = 'success') {
             const container = document.getElementById('toast-container');
-            
-            const toast = document.createElement('div');
-            toast.className = `toast ${tipo}`;
-            
-            let icone = 'fa-circle-check';
-            if (tipo === 'erro') icone = 'fa-circle-exclamation';
-            if (tipo === 'aviso') icone = 'fa-triangle-exclamation';
-
-            toast.innerHTML = `<i class="fa-solid ${icone}" style="font-size: 1.2rem;"></i> <span>${mensagem}</span>`;
-            
-            container.appendChild(toast);
-
-            setTimeout(() => {
-                toast.classList.add('mostrar');
-            }, 100);
-
-            setTimeout(() => {
-                toast.classList.remove('mostrar');
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
+            const div = document.createElement('div');
+            div.style.background = tipo === 'success' ? '#10b981' : '#ef4444';
+            div.style.color = 'white';
+            div.style.padding = '12px 24px';
+            div.style.borderRadius = '8px';
+            div.style.marginBottom = '10px';
+            div.style.fontWeight = '600';
+            div.innerText = mensagem;
+            container.appendChild(div);
+            setTimeout(() => div.remove(), 3000);
         }
 
         function fazerCadastro() {
-            const nome = document.getElementById('cad-nome').value.trim();
-            const email = document.getElementById('cad-email').value.trim();
-            const telefone = document.getElementById('cad-telefone').value.trim();
-            const senha = document.getElementById('cad-senha').value.trim();
+            let nome = document.getElementById('cad-nome').value.trim();
+            let email = document.getElementById('cad-email').value.trim();
+            let senha = document.getElementById('cad-senha').value.trim();
 
-            if (!nome || !email || !telefone || !senha) {
-                mostrarMensagem('Por favor, preencha todos os campos!', 'aviso');
-                return;
-            }
+            if(!nome || !email || !senha) { mostrarToast('Preencha todos os campos!', 'error'); return; }
 
             let usuarios = JSON.parse(localStorage.getItem('usuarios_nexttech')) || [];
+            if(usuarios.some(u => u.email === email)) { mostrarToast('Este e-mail já está cadastrado!', 'error'); return; }
 
-            const existe = usuarios.find(u => u.email === email);
-            if (existe) {
-                mostrarMensagem('Este e-mail já está cadastrado! Faça login.', 'erro');
-                setTimeout(() => mostrarTela('tela-login'), 1500);
-                return;
-            }
-
-            usuarios.push({
-                nome,
-                login: email, 
-                email,
-                telefone,
-                senha,
-                dataCadastro: new Date().toLocaleString(), 
-                carrinho: [],
-                pedidos: []
-            });
-
+            usuarios.push({ nome, email, senha, carrinho: [], dataCadastro: new Date().toLocaleString() });
             localStorage.setItem('usuarios_nexttech', JSON.stringify(usuarios));
-            
-            mostrarMensagem('Cadastro realizado com sucesso!', 'sucesso');
-            
-            document.getElementById('cad-nome').value = '';
-            document.getElementById('cad-email').value = '';
-            document.getElementById('cad-telefone').value = '';
-            document.getElementById('cad-senha').value = '';
-
-            setTimeout(() => {
-                mostrarTela('tela-login');
-            }, 1200);
+            mostrarToast('Conta criada com sucesso!');
+            trocarForm('login');
         }
 
         function fazerLogin() {
-            const email = document.getElementById('login-email').value.trim();
-            const senha = document.getElementById('login-senha').value.trim();
-            const lembrar = document.getElementById('lembrar-me').checked;
-
-            if (!email || !senha) {
-                mostrarMensagem('Informe seu e-mail e senha!', 'aviso');
-                return;
-            }
-
+            let email = document.getElementById('login-email').value.trim();
+            let senha = document.getElementById('login-senha').value.trim();
             let usuarios = JSON.parse(localStorage.getItem('usuarios_nexttech')) || [];
-            const usuarioEncontrado = usuarios.find(u => u.email === email && u.senha === senha);
-
-            if (usuarioEncontrado) {
-                localStorage.setItem('usuario_logado', JSON.stringify(usuarioEncontrado));
-                
-                // Se o cliente marcou a opção, salva o email. Se não, remove.
-                if (lembrar) {
-                    localStorage.setItem('usuario_lembrado', email);
-                } else {
-                    localStorage.removeItem('usuario_lembrado');
-                }
-
-                mostrarMensagem(`Bem-vindo, ${usuarioEncontrado.nome}!`, 'sucesso');
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1000);
+            
+            let usuario = usuarios.find(u => u.email === email && u.senha === senha);
+            if(usuario) {
+                localStorage.setItem('usuario_logado', JSON.stringify(usuario));
+                mostrarToast('Login efetuado com sucesso!');
+                window.location.href = 'index.html';
             } else {
-                mostrarMensagem('E-mail ou senha incorretos, ou conta não cadastrada!', 'erro');
+                mostrarToast('Credenciais inválidas!', 'error');
             }
         }
     </script>
