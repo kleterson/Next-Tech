@@ -1,4 +1,3 @@
-<!-- Copie o conteúdo abaixo e substitua no seu arquivo index.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -7,8 +6,6 @@
     <title>NextTech | Eletrônicos de Alta Performance</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script src="https://sdk.mercadopago.com/js/v2"></script>
     
     <style>
         :root {
@@ -74,13 +71,20 @@
         }
 
         .secao-cancelados {
-            margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed rgba(239, 68, 68, 0.4);
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed rgba(239, 68, 68, 0.4);
         }
         
         .item-cancelado-box {
-            background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 8px; padding: 10px 14px; margin-top: 8px; display: flex;
-            justify-content: space-between; align-items: center;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .hero { padding: 6rem 5% 5rem; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 4rem; min-height: 80vh; }
@@ -117,7 +121,7 @@
         .btn-secondary-cart:hover { background: #059669; }
 
         .cart-drawer { 
-            position: fixed; top: 0; right: 0; width: 100%; max-width: 500px; height: 100%; 
+            position: fixed; top: 0; right: 0; width: 100%; max-width: 450px; height: 100%; 
             background: var(--bg-color); border-left: 1px solid var(--border-color); z-index: 2000; 
             transform: translateX(100%); transition: transform 0.3s ease; padding: 2rem; 
             display: flex; flex-direction: column; overflow-y: auto;
@@ -130,23 +134,9 @@
         .form-control { width: 100%; padding: 0.6rem; margin-bottom: 0.8rem; background: #1a2234; border: 1px solid var(--border-color); color: white; border-radius: 6px; font-size: 0.9rem; }
         .cart-item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
         
-        .payment-methods-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1rem; }
-        .payment-method-card {
-            background: #1a2234; border: 2px solid var(--border-color); border-radius: 8px;
-            padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.2s; color: var(--text-muted);
-        }
-        .payment-method-card i { font-size: 1.4rem; margin-bottom: 6px; display: block; }
-        .payment-method-card span { font-size: 0.85rem; font-weight: 600; display: block; }
-        .payment-method-card.selected { border-color: var(--accent-color); background: rgba(59, 130, 246, 0.1); color: var(--text-main); }
-
-        .card-form-group { margin-bottom: 10px; }
-        .card-form-group label { font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 3px; }
-
-        #toast-sucesso-pagamento {
-            position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
-            background: #10b981; color: white; padding: 16px 28px; border-radius: 12px;
-            font-weight: 700; z-index: 4000; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            font-size: 1.1rem; align-items: center; gap: 12px;
+        #toast-copiado {
+            position: fixed; bottom: 30px; right: 30px; background: #10b981; color: white; padding: 12px 24px;
+            border-radius: 8px; font-weight: 600; z-index: 3000; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
         .chat-widget-btn {
@@ -177,7 +167,9 @@
         .chat-body {
             flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem;
         }
-        .chat-msg { max-width: 85%; padding: 10px 14px; border-radius: 12px; line-height: 1.4; word-break: break-word; }
+        .chat-msg {
+            max-width: 85%; padding: 10px 14px; border-radius: 12px; line-height: 1.4; word-break: break-word;
+        }
         .chat-msg.bot { background: #1a2234; color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 2px; }
         .chat-msg.user { background: var(--accent-color); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
 
@@ -203,29 +195,7 @@
 </head>
 <body>
 
-    <div id="toast-sucesso-pagamento">
-        <i class="fa-solid fa-circle-check" style="font-size: 1.5rem;"></i>
-        <span>🎉 Pedido realizado com sucesso! Chave Pix copiada.</span>
-    </div>
-
-    <script>
-        function tocarSomSucesso() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); 
-                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); 
-                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.5);
-            } catch(e) {}
-        }
-    </script>
+    <div id="toast-copiado">Copiado com sucesso!</div>
 
     <header>
         <a href="#" class="logo" onclick="mostrarLoja(event)"><i class="fa-solid fa-microchip"></i> Next<span>Tech</span></a>
@@ -244,7 +214,7 @@
             <button class="cart-btn" onclick="toggleCart()">
                 <i class="fa-solid fa-cart-shopping"></i> Carrinho (<span id="cart-count">0</span>)
             </button>
-            <a href="login.html" class="logout-btn" onclick="fazerLogout(event)">
+            <a href="login.html" class="logout-btn" onclick="fazerLogout()">
                 <i class="fa-solid fa-right-from-bracket"></i> Sair
             </a>
         </div>
@@ -297,88 +267,60 @@
         
         <div id="cart-items-list" style="margin-bottom: 1rem;"></div>
 
-        <!-- Etapa 1: Dados de Entrega -->
-        <div id="etapa-dados-entrega">
+        <div style="border-top: 1px solid var(--border-color); padding-top: 1rem;">
             <h4 style="margin-bottom: 0.5rem; font-size: 0.95rem;">Dados de Entrega</h4>
             <input type="text" id="cli-nome" placeholder="Nome Completo" class="form-control" autocomplete="name">
             <input type="text" id="cli-cep" placeholder="CEP (Apenas números)" class="form-control" maxlength="9" onblur="buscarCep(this.value)" autocomplete="postal-code">
             <input type="text" id="cli-endereco" placeholder="Endereço Completo (Rua, Bairro, Cidade)" class="form-control" autocomplete="street-address">
             <input type="text" id="cli-numero" placeholder="Número da Casa / Apto" class="form-control" autocomplete="address-line2">
 
-            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.1rem; margin: 1.5rem 0 1rem 0;">
+            <h4 style="margin: 0.8rem 0 0.4rem; font-size: 0.95rem;">Forma de Pagamento</h4>
+            <select id="cli-pagamento" class="form-control" onchange="mudarFormaPagamento()">
+                <option value="credito">Cartão de Crédito</option>
+                <option value="debito">Cartão de Débito</option>
+                <option value="pix">Pix (QR Code / Copia e Cola)</option>
+            </select>
+
+            <div id="opcao-parcelas" style="margin-bottom: 0.8rem;">
+                <label style="font-size: 0.8rem; color: var(--text-muted);">Parcelamento:</label>
+                <select id="cli-parcelas" class="form-control">
+                    <option value="1">1x à vista</option>
+                    <option value="2">2x sem juros</option>
+                    <option value="3">3x sem juros</option>
+                    <option value="4">4x sem juros</option>
+                    <option value="5">5x sem juros</option>
+                    <option value="6">6x sem juros</option>
+                    <option value="7">7x sem juros</option>
+                    <option value="8">8x sem juros</option>
+                    <option value="9">9x sem juros</option>
+                    <option value="10">10x sem juros</option>
+                </select>
+            </div>
+
+            <div id="dados-cartao-container" style="display: block; margin-bottom: 0.8rem;">
+                <input type="text" id="cartao-numero" placeholder="Número do Cartão (0000 0000 0000 0000)" class="form-control" autocomplete="cc-number" inputmode="numeric">
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="cartao-validade" placeholder="MM/AA" class="form-control" style="width: 50%;" autocomplete="cc-exp">
+                    <input type="text" id="cartao-cvv" placeholder="CVV" class="form-control" style="width: 50%;" autocomplete="cc-csc" inputmode="numeric">
+                </div>
+            </div>
+
+            <div id="opcao-pix-container" style="display: none; text-align: center; margin-bottom: 1rem; background: #1a2234; padding: 15px; border-radius: 8px;">
+                <p style="font-size: 0.85rem; margin-bottom: 8px; color: var(--text-muted);">Escaneie o QR Code ou copie o código abaixo:</p>
+                <div style="background: white; padding: 10px; display: inline-block; border-radius: 6px; margin-bottom: 8px;">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=NextTechPixPagamentoSeguro" alt="QR Code Pix" style="display: block;">
+                </div>
+                <div onclick="copiarPix()" style="background: #065f46; color: #34d399; padding: 10px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; border: 1px dashed #10b981; transition: background 0.3s;">
+                    <i class="fa-solid fa-copy"></i> Copiar Código Pix (Copia e Cola)
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.1rem; margin-bottom: 1rem;">
                 <span>Total:</span>
                 <span id="cart-total" style="color: var(--accent-color);">R$ 0,00</span>
             </div>
 
-            <button class="btn-primary" onclick="avancarParaFormasPagamento()">Escolher Forma de Pagamento</button>
-        </div>
-
-        <!-- Etapa 2: Seleção e preenchimento de Pagamento -->
-        <div id="etapa-pagamento-custom" style="display: none; margin-top: 1rem;">
-            <button onclick="voltarParaDadosEntrega()" style="background: none; border: none; color: var(--accent-color); cursor: pointer; margin-bottom: 1rem; font-weight: 600;">
-                <i class="fa-solid fa-arrow-left"></i> Voltar aos dados
-            </button>
-            <h4 style="margin-bottom: 0.8rem; font-size: 0.95rem;">Forma de Pagamento</h4>
-            
-            <div class="payment-methods-grid">
-                <div class="payment-method-card selected" id="metodo-pix" onclick="selecionarMetodo('pix')">
-                    <i class="fa-solid fa-qrcode"></i>
-                    <span>Pix</span>
-                </div>
-                <div class="payment-method-card" id="metodo-credito" onclick="selecionarMetodo('credito')">
-                    <i class="fa-solid fa-credit-card"></i>
-                    <span>Crédito</span>
-                </div>
-                <div class="payment-method-card" id="metodo-debito" onclick="selecionarMetodo('debito')">
-                    <i class="fa-solid fa-wallet"></i>
-                    <span>Débito</span>
-                </div>
-            </div>
-
-            <!-- Área Dinâmica do Pix Integrada com o Backend -->
-            <div id="painel-pix" style="text-align: center; background: #1a2234; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
-                <p style="font-size: 0.9rem; margin-bottom: 10px; color: var(--text-muted);">Escaneie o QR Code ou copie o código Pix:</p>
-                <div id="qr-code-img-container" style="background: white; padding: 15px; display: inline-block; border-radius: 8px; margin-bottom: 10px;">
-                    <img id="qr-code-src" src="" alt="QR Code Pix" style="width: 150px; height: 150px; display: none;">
-                    <div id="qr-code-loading" style="color: #000; font-weight: 600; padding: 35px 10px; font-size: 0.85rem;">Gerando Pix Oficial...</div>
-                </div>
-                
-                <!-- Input para armazenar a string Copia e Cola gerada pelo MP -->
-                <input type="text" id="pix-copia-cola-text" style="width: 100%; padding: 6px; font-size: 0.8rem; background: #0b0f19; color: #fff; border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 10px;" readonly>
-
-                <button class="btn-secondary-cart" id="btn-copiar-pix" onclick="copiarPixCopiaCola()" style="margin-top: 5px; width: 100%; display: none;">
-                    <i class="fa-solid fa-copy"></i> Copiar Código Pix (Copia e Cola)
-                </button>
-            </div>
-
-            <!-- Área de Cartão (Crédito / Débito) -->
-            <div id="painel-cartao" style="display: none; background: #1a2234; padding: 1.2rem; border-radius: 8px; margin-bottom: 1rem;">
-                <div class="card-form-group">
-                    <label>Número do Cartão</label>
-                    <input type="text" id="card-number" placeholder="4111 2222 3333 4444" class="form-control" maxlength="19">
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <div class="card-form-group">
-                        <label>Validade (MM/AA)</label>
-                        <input type="text" id="card-expiry" placeholder="MM/AA" class="form-control" maxlength="5">
-                    </div>
-                    <div class="card-form-group">
-                        <label>CVV</label>
-                        <input type="text" id="card-cvv" placeholder="123" class="form-control" maxlength="4">
-                    </div>
-                </div>
-                <div class="card-form-group">
-                    <label>Nome no Cartão</label>
-                    <input type="text" id="card-holder" placeholder="Nome impresso no cartão" class="form-control">
-                </div>
-
-                <div class="card-form-group" id="grupo-parcelas">
-                    <label>Parcelamento (Sem Juros)</label>
-                    <select id="card-installments" class="form-control"></select>
-                </div>
-            </div>
-
-            <button class="btn-primary" id="btn-finalizar-pagamento" onclick="processarPagamentoCustom()">Finalizar Pagamento</button>
+            <button class="btn-primary" onclick="finalizarCompra()">Finalizar Pedido</button>
         </div>
     </div>
 
@@ -390,22 +332,28 @@
 
         let carrinho = usuarioLogado ? (usuarioLogado.carrinho || []) : [];
         let categoriaAtual = 'todos';
-        let metodoPagamentoSelecionado = 'pix';
-        let pixIntervalId = null;
-        let idPagamentoAtual = null;
 
         let chatAberto = false;
         let etapaChat = 'inicio';
         let pedidoParaCancelarTemp = null;
+
         let tempEnderecoRua = '';
         let tempCepConsultado = '';
 
         document.addEventListener("DOMContentLoaded", () => {
             if (usuarioLogado) {
-                if (document.getElementById('cli-nome')) document.getElementById('cli-nome').value = usuarioLogado.nome || '';
-                if (usuarioLogado.enderecoCompleto && document.getElementById('cli-endereco')) document.getElementById('cli-endereco').value = usuarioLogado.enderecoCompleto;
-                if (usuarioLogado.cepSalvo && document.getElementById('cli-cep')) document.getElementById('cli-cep').value = usuarioLogado.cepSalvo;
-                if (usuarioLogado.numeroSalvo && document.getElementById('cli-numero')) document.getElementById('cli-numero').value = usuarioLogado.numeroSalvo;
+                if (document.getElementById('cli-nome')) {
+                    document.getElementById('cli-nome').value = usuarioLogado.nome || '';
+                }
+                if (usuarioLogado.enderecoCompleto && document.getElementById('cli-endereco')) {
+                    document.getElementById('cli-endereco').value = usuarioLogado.enderecoCompleto;
+                }
+                if (usuarioLogado.cepSalvo && document.getElementById('cli-cep')) {
+                    document.getElementById('cli-cep').value = usuarioLogado.cepSalvo;
+                }
+                if (usuarioLogado.numeroSalvo && document.getElementById('cli-numero')) {
+                    document.getElementById('cli-numero').value = usuarioLogado.numeroSalvo;
+                }
             }
             carregarLoja();
             atualizarCarrinhoUI();
@@ -443,6 +391,7 @@
                         : 'Nenhum item ativo';
                     
                     let statusDoPedido = p.statusEnvio || 'Processando / Aprovado';
+
                     let estiloBadge = "background: #1e3a8a; color: #60a5fa;";
                     let classeAnimada = "animado";
                     let textoPrazo = `Prazo: ${p.prazo || '7 dias úteis'}`;
@@ -472,7 +421,7 @@
                                     </div>
                                     <div style="text-align: right;">
                                         <span style="background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">
-                                            Aguarde 3 dias úteis para reembolso
+                                            Aguarde 3 dias úteis para o reembolso
                                         </span>
                                     </div>
                                 </div>
@@ -487,7 +436,7 @@
                                 <div>
                                     <h4 style="color:var(--accent-color); margin-bottom: 4px;">Pedido #${p.id}</h4>
                                     <p style="font-size: 0.9rem; margin-bottom: 4px;"><strong>Itens Ativos:</strong> ${nomesItens}</p>
-                                    <p style="font-size: 0.8rem; color: var(--text-muted);">Data: ${p.data} | <strong>Forma:</strong> ${p.pagamento.toUpperCase()}</p>
+                                    <p style="font-size: 0.8rem; color: var(--text-muted);">Data do pedido: ${p.data}</p>
                                 </div>
                                 <div style="text-align: right;">
                                     <div class="status-badge ${classeAnimada}" style="${estiloBadge}">${statusDoPedido}</div>
@@ -511,6 +460,7 @@
         function salvarUsuarioNoStorage() {
             if (!usuarioLogado) return;
             localStorage.setItem('usuario_logado', JSON.stringify(usuarioLogado));
+
             let usuarios = JSON.parse(localStorage.getItem('usuarios_nexttech')) || [];
             let index = usuarios.findIndex(u => u.email === usuarioLogado.email);
             if (index !== -1) {
@@ -528,7 +478,6 @@
         function toggleCart() {
             document.getElementById('cart-drawer').classList.toggle('open');
             document.getElementById('overlay').classList.toggle('open');
-            voltarParaDadosEntrega();
         }
 
         function buscarCep(cep) {
@@ -542,6 +491,7 @@
                         let enderecoCompleto = `${data.logradouro}, ${data.bairro} - ${data.localidade}/${data.uf}`;
                         document.getElementById('cli-endereco').value = enderecoCompleto;
                         document.getElementById('cli-numero').focus();
+                        
                         usuarioLogado.cepSalvo = cepLimpo;
                         usuarioLogado.enderecoCompleto = enderecoCompleto;
                         salvarUsuarioNoStorage();
@@ -552,9 +502,59 @@
                 .catch(error => console.error('Erro ao buscar CEP:', error));
         }
 
+        function mudarFormaPagamento() {
+            const metodo = document.getElementById('cli-pagamento').value;
+            const parcelasDiv = document.getElementById('opcao-parcelas');
+            const cartaoContainer = document.getElementById('dados-cartao-container');
+            const pixContainer = document.getElementById('opcao-pix-container');
+
+            if (metodo === 'credito') {
+                parcelasDiv.style.display = 'block';
+                cartaoContainer.style.display = 'block';
+                pixContainer.style.display = 'none';
+            } else if (metodo === 'debito') {
+                parcelasDiv.style.display = 'none';
+                cartaoContainer.style.display = 'block';
+                pixContainer.style.display = 'none';
+            } else if (metodo === 'pix') {
+                parcelasDiv.style.display = 'none';
+                cartaoContainer.style.display = 'none';
+                pixContainer.style.display = 'block';
+            }
+        }
+
+        function copiarPix() {
+            const codigoPixFicticio = "00020126580014br.gov.bcb.pix...NextTechPagamentoInstantaneo";
+            navigator.clipboard.writeText(codigoPixFicticio);
+            tocarSomBeep();
+
+            const toast = document.getElementById('toast-copiado');
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2500);
+        }
+
+        function tocarSomBeep() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = 800;
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.15);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.15);
+            } catch(e) {}
+        }
+
         function atualizarBannerDaHome() {
             const banners = JSON.parse(localStorage.getItem('banners_por_categoria')) || {};
             const bannerContainer = document.getElementById('hero-banner-container');
+            
             if (categoriaAtual === 'todos') {
                 bannerContainer.innerHTML = `<img src="neymar.jpg" alt="NextTech com Neymar">`;
             } else if (banners[categoriaAtual]) {
@@ -628,7 +628,9 @@
             let corSelecionada = 'Padrão';
             if (corId) {
                 const selectElement = document.getElementById(corId);
-                if (selectElement) corSelecionada = selectElement.value;
+                if (selectElement) {
+                    corSelecionada = selectElement.value;
+                }
             }
 
             carrinho.push({ nome, preco, cor: corSelecionada });
@@ -669,20 +671,22 @@
             atualizarCarrinhoUI();
         }
 
-        function voltarParaDadosEntrega() {
-            if (pixIntervalId) clearInterval(pixIntervalId);
-            document.getElementById('etapa-pagamento-custom').style.display = 'none';
-            document.getElementById('etapa-dados-entrega').style.display = 'block';
-        }
-
-        function avancarParaFormasPagamento() {
+        function finalizarCompra() {
             const nome = document.getElementById('cli-nome').value;
             const cep = document.getElementById('cli-cep').value;
             const endereco = document.getElementById('cli-endereco').value;
             const numero = document.getElementById('cli-numero').value;
+            const pagamento = document.getElementById('cli-pagamento').value;
+            const parcelas = document.getElementById('cli-parcelas').value;
+            const cartaoNum = document.getElementById('cartao-numero').value;
 
             if (!nome || !cep || !endereco || !numero) {
                 alert('Por favor, preencha todos os dados de entrega!');
+                return;
+            }
+
+            if ((pagamento === 'credito' || pagamento === 'debito') && !cartaoNum) {
+                alert('Por favor, preencha os dados do cartão de pagamento!');
                 return;
             }
 
@@ -696,186 +700,24 @@
             usuarioLogado.numeroSalvo = numero;
             salvarUsuarioNoStorage();
 
-            document.getElementById('etapa-dados-entrega').style.display = 'none';
-            document.getElementById('etapa-pagamento-custom').style.display = 'block';
-
-            selecionarMetodo('pix');
-        }
-
-        function selecionarMetodo(metodo) {
-            if (pixIntervalId) clearInterval(pixIntervalId);
-            metodoPagamentoSelecionado = metodo;
-
-            document.querySelectorAll('.payment-method-card').forEach(el => el.classList.remove('selected'));
-            document.getElementById(`metodo-${metodo}`).classList.add('selected');
-
-            const painelPix = document.getElementById('painel-pix');
-            const painelCartao = document.getElementById('painel-cartao');
-            const grupoParcelas = document.getElementById('grupo-parcelas');
-            const btnFinalizar = document.getElementById('btn-finalizar-pagamento');
-
-            if (metodo === 'pix') {
-                painelPix.style.display = 'block';
-                painelCartao.style.display = 'none';
-                btnFinalizar.style.display = 'none'; 
-                gerarPixRealMercadoPago();
-            } else if (metodo === 'credito') {
-                painelPix.style.display = 'none';
-                painelCartao.style.display = 'block';
-                grupoParcelas.style.display = 'block';
-                btnFinalizar.style.display = 'block';
-                btnFinalizar.innerText = 'Pagar com Cartão de Crédito';
-                popularParcelas();
-            } else if (metodo === 'debito') {
-                painelPix.style.display = 'none';
-                painelCartao.style.display = 'block';
-                grupoParcelas.style.display = 'none';
-                btnFinalizar.style.display = 'block';
-                btnFinalizar.innerText = 'Pagar com Cartão de Débito';
-            }
-        }
-
-        function popularParcelas() {
-            const total = carrinho.reduce((acc, i) => acc + i.preco, 0);
-            const select = document.getElementById('card-installments');
-            select.innerHTML = '';
-            for (let i = 1; i <= 10; i++) {
-                let valorParcela = total / i;
-                select.innerHTML += `<option value="${i}">${i}x de R$ ${valorParcela.toFixed(2)} sem juros</option>`;
-            }
-        }
-
-        async function gerarPixRealMercadoPago() {
-            document.getElementById('qr-code-src').style.display = 'none';
-            document.getElementById('qr-code-loading').style.display = 'block';
-            document.getElementById('btn-copiar-pix').style.display = 'none';
-            document.getElementById('pix-copia-cola-text').value = '';
-
             const total = carrinho.reduce((acc, item) => acc + item.preco, 0);
 
-            const dadosPagamento = {
-                formData: {
-                    transaction_amount: total,
-                    payment_method_id: 'pix',
-                    payer: {
-                        email: usuarioLogado.email || 'comprador@email.com',
-                        identification: {
-                            type: 'CPF',
-                            number: '12345678909'
-                        }
-                    }
-                },
-                dadosEntrega: {
-                    nome: document.getElementById('cli-nome').value,
-                    cep: document.getElementById('cli-cep').value,
-                    endereco: document.getElementById('cli-endereco').value,
-                    numero: document.getElementById('cli-numero').value,
-                    email: usuarioLogado.email
-                }
-            };
+            let descricaoPagamento = 'Pix';
+            if(pagamento === 'credito') descricaoPagamento = `Cartão de Crédito (${parcelas}x)`;
+            if(pagamento === 'debito') descricaoPagamento = 'Cartão de Débito';
 
-            try {
-                const response = await fetch('/api/process-payment', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dadosPagamento)
-                });
-                
-                const data = await response.json();
-
-                if (response.ok && data.point_of_interaction) {
-                    const poi = data.point_of_interaction.transaction_data;
-                    idPagamentoAtual = data.id;
-
-                    const qrCodeBase64 = poi.qr_code_base64;
-                    const copiaCola = poi.qr_code;
-
-                    document.getElementById('pix-copia-cola-text').value = copiaCola;
-
-                    if (qrCodeBase64) {
-                        document.getElementById('qr-code-src').src = `data:image/png;base64,${qrCodeBase64}`;
-                    } else {
-                        document.getElementById('qr-code-src').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(copiaCola)}`;
-                    }
-
-                    document.getElementById('qr-code-src').style.display = 'inline-block';
-                    document.getElementById('qr-code-loading').style.display = 'none';
-                    document.getElementById('btn-copiar-pix').style.display = 'flex';
-
-                    iniciarVerificacaoStatusPix(idPagamentoAtual);
-
-                } else {
-                    alert('Erro ao gerar Pix: ' + (data.error || 'Verifique suas credenciais no painel admin'));
-                    document.getElementById('qr-code-loading').innerText = 'Erro ao gerar Pix';
-                }
-            } catch (error) {
-                console.error('Erro de conexão:', error);
-                document.getElementById('qr-code-loading').innerText = 'Erro de conexão com o servidor';
-            }
-        }
-
-        function iniciarVerificacaoStatusPix(paymentId) {
-            if (pixIntervalId) clearInterval(pixIntervalId);
-            pixIntervalId = setInterval(async () => {
-                try {
-                    const res = await fetch(`/api/check-payment/${paymentId}`);
-                    const dados = await res.json();
-                    if (dados.status === 'approved') {
-                        clearInterval(pixIntervalId);
-                        finalizarPedidoComSucesso('pix');
-                    }
-                } catch (e) {}
-            }, 4000);
-        }
-
-        function copiarPixCopiaCola() {
-            const inputCopiaCola = document.getElementById('pix-copia-cola-text');
-            inputCopiaCola.select();
-            inputCopiaCola.setSelectionRange(0, 99999);
-            
-            try {
-                navigator.clipboard.writeText(inputCopiaCola.value).then(() => {
-                    finalizarPedidoComSucesso('pix');
-                }).catch(() => {
-                    document.execCommand('copy');
-                    finalizarPedidoComSucesso('pix');
-                });
-            } catch (err) {
-                document.execCommand('copy');
-                finalizarPedidoComSucesso('pix');
-            }
-        }
-
-        function processarPagamentoCustom() {
-            const numCartao = document.getElementById('card-number').value;
-            const validade = document.getElementById('card-expiry').value;
-            const cvv = document.getElementById('card-cvv').value;
-            const nomeCartao = document.getElementById('card-holder').value;
-
-            if (!numCartao || !validade || !cvv || !nomeCartao) {
-                alert('Por favor, preencha todos os dados do cartão!');
-                return;
-            }
-
-            finalizarPedidoComSucesso(metodoPagamentoSelecionado);
-        }
-
-        function finalizarPedidoComSucesso(metodoUsado) {
-            if (pixIntervalId) clearInterval(pixIntervalId);
-
-            const total = carrinho.reduce((acc, item) => acc + item.preco, 0);
             const novoPedido = {
                 id: Date.now(),
-                cliente: document.getElementById('cli-nome').value,
+                cliente: nome,
                 emailCliente: usuarioLogado.email,
-                cep: document.getElementById('cli-cep').value,
-                numero: document.getElementById('cli-numero').value,
-                endereco: document.getElementById('cli-endereco').value,
-                pagamento: metodoUsado,
+                cep,
+                numero,
+                endereco,
+                pagamento: descricaoPagamento,
                 itens: [...carrinho],
                 itensCancelados: [],
                 total,
-                statusEnvio: 'Aprovado',
+                statusEnvio: 'Pedido sendo embalado',
                 prazo: '7 dias úteis',
                 data: new Date().toLocaleString()
             };
@@ -884,18 +726,16 @@
             pedidos.unshift(novoPedido);
             localStorage.setItem('pedidos_nexttech', JSON.stringify(pedidos));
 
+            alert('Compra realizada com sucesso! Pedido enviado para o painel administrativo.');
+            
             carrinho = [];
             usuarioLogado.carrinho = carrinho;
             salvarUsuarioNoStorage();
+            
             atualizarCarrinhoUI();
             toggleCart();
 
-            tocarSomSucesso();
-            const toast = document.getElementById('toast-sucesso-pagamento');
-            toast.style.display = 'flex';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 4000);
+            abrirMeusPedidos({ preventDefault: () => {} });
         }
 
         function filtrarProdutos(event, categoria) {
@@ -907,12 +747,17 @@
             carregarLoja();
         }
 
+        // ==========================================
+        // LÓGICA DO CHATBOT FLUTUANTE
+        // ==========================================
         function toggleChatBot() {
             chatAberto = !chatAberto;
             const container = document.getElementById('chat-container');
             if (chatAberto) {
                 container.classList.add('open');
-                if (etapaChat === 'inicio') iniciarChatBot();
+                if (etapaChat === 'inicio') {
+                    iniciarChatBot();
+                }
             } else {
                 container.classList.remove('open');
             }
@@ -932,12 +777,14 @@
         function iniciarChatBot() {
             const nomeCliente = usuarioLogado ? usuarioLogado.nome : 'Cliente';
             document.getElementById('chat-body').innerHTML = '';
-            adicionarMensagemChat(`Bem-vindo, ${nomeCliente} 😊! Escolha uma das opções abaixo:`, 'bot');
+            
+            adicionarMensagemChat(`Bem-vindo, ${nomeCliente} 😊! Escolha uma das opções abaixo para prosseguir:`, 'bot');
             
             const opcoesHtml = `
                 <div class="chat-options" id="menu-opcoes-inicial">
                     <button class="chat-opt-btn" onclick="escolherOpcaoChat('registrar_endereco')">📍 Registrar Endereço</button>
                     <button class="chat-opt-btn" onclick="escolherOpcaoChat('atualizar_cep')">📮 Atualizar CEP</button>
+                    <button class="chat-opt-btn" onclick="escolherOpcaoChat('pagamento')">💳 Fazer Pagamento</button>
                     <button class="chat-opt-btn" onclick="escolherOpcaoChat('cancelar')" style="color: #ef4444; border-color: #ef4444;">❌ Cancelar Compra</button>
                 </div>
             `;
@@ -963,13 +810,40 @@
                 document.getElementById('chat-input-area').style.display = 'flex';
                 document.getElementById('chat-user-input').focus();
             } 
-            else if (opcao === 'cancelar') {
+            else if (opcao === 'pagamento') {
+                adicionarMensagemChat("Fazer Pagamento", "user");
+                
+                if (carrinho.length === 0) {
+                    adicionarMensagemChat("Seu carrinho está vazio! Adicione produtos antes de realizar o pagamento.", "bot");
+                    setTimeout(() => iniciarChatBot(), 2000);
+                    return;
+                }
+
+                let itensResumo = carrinho.map(i => `• ${i.nome} (${i.cor}) - <strong>R$ ${i.preco.toFixed(2)}</strong>`).join('<br>');
+                let totalCarrinho = carrinho.reduce((acc, i) => acc + i.preco, 0);
+
+                let resumoHtml = `
+                    <div style="background: var(--bg-color); padding: 10px; border-radius: 8px; margin: 6px 0; border: 1px solid var(--border-color); font-size: 0.85rem;">
+                        ${itensResumo}
+                        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 6px 0;">
+                        <strong>Total: R$ ${totalCarrinho.toFixed(2)}</strong>
+                    </div>
+                    <p style="margin-top: 6px;">Deseja confirmar a compra destes produtos?</p>
+                    <div class="chat-options" id="menu-confirmar-carrinho" style="margin-top: 8px;">
+                        <button class="chat-opt-btn" onclick="confirmarCarrinhoChat(true)">✅ Sim, confirmar produtos</button>
+                        <button class="chat-opt-btn" onclick="confirmarCarrinhoChat(false)" style="color: #ef4444; border-color: #ef4444;">❌ Não, alterar carrinho</button>
+                    </div>
+                `;
+                adicionarMensagemChat("Aqui estão os produtos atualmente no seu carrinho:", "bot", resumoHtml);
+
+            } else if (opcao === 'cancelar') {
                 adicionarMensagemChat("❌ Cancelar Compra", "user");
+                
                 let pedidos = JSON.parse(localStorage.getItem('pedidos_nexttech')) || [];
                 let pedidosAtivos = pedidos.filter(p => p.emailCliente === usuarioLogado.email && p.itens && p.itens.length > 0);
                 
                 if (pedidosAtivos.length === 0) {
-                    adicionarMensagemChat("⚠️ Nenhum pedido ativo encontrado para cancelamento.", "bot");
+                    adicionarMensagemChat("⚠️ Você só pode cancelar uma compra após finalizar o pagamento e possuir pedidos ativos. Nenhum pedido elegível encontrado.", "bot");
                     setTimeout(() => iniciarChatBot(), 3500);
                     return;
                 }
@@ -981,14 +855,19 @@
                 });
                 botoesPedidosHtml += `</div>`;
 
-                adicionarMensagemChat("Selecione abaixo qual **pedido** deseja gerenciar para cancelamento:", "bot", botoesPedidosHtml);
+                adicionarMensagemChat("Selecione abaixo qual **pedido finalizado** deseja gerenciar para cancelamento:", "bot", botoesPedidosHtml);
             }
         }
 
         function selecionarPedidoParaCancelar(idPedido) {
             let pedidos = JSON.parse(localStorage.getItem('pedidos_nexttech')) || [];
             let pedidoEscolhido = pedidos.find(p => p.id === idPedido);
-            if (!pedidoEscolhido) return;
+
+            if (!pedidoEscolhido) {
+                adicionarMensagemChat("Pedido não encontrado.", "bot");
+                setTimeout(() => iniciarChatBot(), 2000);
+                return;
+            }
 
             pedidoParaCancelarTemp = pedidoEscolhido;
             const menuPedidos = document.getElementById('menu-selecionar-pedido-cancelar');
@@ -1002,17 +881,22 @@
             });
             botoesItensHtml += `</div>`;
 
-            adicionarMensagemChat("Selecione qual item deste pedido deseja cancelar:", "bot", botoesItensHtml);
+            adicionarMensagemChat("Selecione abaixo qual item deste pedido você deseja cancelar:", "bot", botoesItensHtml);
         }
 
         function selecionarItemParaCancelar(indexItem) {
             const menuItens = document.getElementById('menu-selecionar-item-cancelar');
             if (menuItens) menuItens.style.display = 'none';
 
+            let itemEscolhido = pedidoParaCancelarTemp.itens[indexItem];
+            adicionarMensagemChat(`🏷️ ${itemEscolhido.nome} (${itemEscolhido.cor})`, "user");
+
             let itemRemovido = pedidoParaCancelarTemp.itens.splice(indexItem, 1)[0];
             itemRemovido.dataCancelamento = new Date().toLocaleString();
 
-            if (!pedidoParaCancelarTemp.itensCancelados) pedidoParaCancelarTemp.itensCancelados = [];
+            if (!pedidoParaCancelarTemp.itensCancelados) {
+                pedidoParaCancelarTemp.itensCancelados = [];
+            }
             pedidoParaCancelarTemp.itensCancelados.push(itemRemovido);
 
             let pedidos = JSON.parse(localStorage.getItem('pedidos_nexttech')) || [];
@@ -1034,14 +918,79 @@
                 }
             }
 
-            adicionarMensagemChat("Item cancelado com sucesso! Digite o **motivo do cancelamento**:", "bot");
+            adicionarMensagemChat("Item cancelado com sucesso! Por favor, digite o **motivo do cancelamento**:", "bot");
             etapaChat = 'aguardando_motivo_cancelamento';
             document.getElementById('chat-input-area').style.display = 'flex';
             document.getElementById('chat-user-input').focus();
         }
 
+        function confirmarCarrinhoChat(confirmado) {
+            const menuConf = document.getElementById('menu-confirmar-carrinho');
+            if (menuConf) menuConf.style.display = 'none';
+
+            if (confirmado) {
+                adicionarMensagemChat("Sim, confirmar produtos", "user");
+                adicionarMensagemChat("Escolha a forma de pagamento:", "bot");
+                const pagHtml = `
+                    <div class="chat-options" id="menu-pagamento">
+                        <button class="chat-opt-btn" onclick="escolherPagamentoChat('1')">1 - Débito</button>
+                        <button class="chat-opt-btn" onclick="escolherPagamentoChat('2')">2 - Crédito</button>
+                        <button class="chat-opt-btn" onclick="escolherPagamentoChat('3')">3 - Pix</button>
+                    </div>
+                `;
+                adicionarMensagemChat('', 'bot', pagHtml);
+            } else {
+                adicionarMensagemChat("Não, alterar carrinho", "user");
+                adicionarMensagemChat("Tudo bem! Você pode abrir o carrinho no topo da página para alterar os itens ou voltar ao menu principal.", "bot");
+                setTimeout(() => iniciarChatBot(), 2500);
+            }
+        }
+
+        function escolherPagamentoChat(tipo) {
+            const menuPag = document.getElementById('menu-pagamento');
+            if (menuPag) menuPag.style.display = 'none';
+
+            if (tipo === '1') {
+                adicionarMensagemChat("1 - Débito", "user");
+                adicionarMensagemChat("Por favor, digite o **número do cartão** de débito:", "bot");
+                etapaChat = 'aguardando_debito_numero';
+                document.getElementById('chat-input-area').style.display = 'flex';
+                document.getElementById('chat-user-input').focus();
+            } else if (tipo === '2') {
+                adicionarMensagemChat("2 - Crédito", "user");
+                adicionarMensagemChat("Por favor, digite o **número do cartão** de crédito:", "bot");
+                etapaChat = 'aguardando_credito_numero';
+                document.getElementById('chat-input-area').style.display = 'flex';
+                document.getElementById('chat-user-input').focus();
+            } else if (tipo === '3') {
+                adicionarMensagemChat("3 - Pix", "user");
+                const pixQrHtml = `
+                    <div style="background: white; padding: 10px; display: inline-block; border-radius: 6px; margin: 8px 0; text-align: center;">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=NextTechPixChatSeguro" alt="QR Code Pix">
+                    </div>
+                    <div onclick="copiarPixChat()" style="background: #065f46; color: #34d399; padding: 8px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; cursor: pointer; text-align: center; border: 1px dashed #10b981;">
+                        <i class="fa-solid fa-copy"></i> Copiar Código Pix (Copia e Cola)
+                    </div>
+                `;
+                adicionarMensagemChat("Aqui está o seu QR Code Pix para pagamento instantâneo:", "bot", pixQrHtml);
+                
+                salvarPedidoDoChat('Pix');
+                setTimeout(() => solicitarAvaliacaoChat(), 2500);
+            }
+        }
+
+        function copiarPixChat() {
+            navigator.clipboard.writeText("00020126580014br.gov.bcb.pix...NextTechChatBotPix");
+            tocarSomBeep();
+            const toast = document.getElementById('toast-copiado');
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+        }
+
         function verificarEnterChat(event) {
-            if (event.key === 'Enter') enviarMensagemTexto();
+            if (event.key === 'Enter') {
+                enviarMensagemTexto();
+            }
         }
 
         function enviarMensagemTexto() {
@@ -1066,19 +1015,24 @@
                 usuarioLogado.numeroSalvo = texto;
                 salvarUsuarioNoStorage();
 
-                if (document.getElementById('cli-endereco')) document.getElementById('cli-endereco').value = enderecoFinal;
-                if (document.getElementById('cli-numero')) document.getElementById('cli-numero').value = texto;
+                if (document.getElementById('cli-endereco')) {
+                    document.getElementById('cli-endereco').value = enderecoFinal;
+                }
+                if (document.getElementById('cli-numero')) {
+                    document.getElementById('cli-numero').value = texto;
+                }
 
-                adicionarMensagemChat(`Endereço salvo com sucesso! 🏠✨<br><strong>${enderecoFinal}</strong>`, "bot");
+                adicionarMensagemChat(`Endereço registrado e salvo permanentemente com sucesso! 🏠✨<br><strong>${enderecoFinal}</strong>`, "bot");
                 setTimeout(() => iniciarChatBot(), 3000);
             }
             else if (etapaChat === 'cep_aguardando_cep') {
                 let cepLimpo = texto.replace(/\D/g, '');
                 if (cepLimpo.length !== 8) {
-                    adicionarMensagemChat("CEP inválido! Digite um CEP com 8 dígitos:", "bot");
+                    adicionarMensagemChat("CEP inválido! Digite um CEP com 8 dígitos numéricos:", "bot");
                     document.getElementById('chat-input-area').style.display = 'flex';
                     return;
                 }
+                
                 tempCepConsultado = cepLimpo;
 
                 fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`)
@@ -1086,25 +1040,26 @@
                     .then(data => {
                         if (!data.erro) {
                             tempEnderecoRua = `${data.logradouro}, ${data.bairro} - ${data.localidade}/${data.uf}`;
+                            
                             let confirmHtml = `
                                 <div style="background: var(--bg-color); padding: 10px; border-radius: 8px; margin: 6px 0; border: 1px solid var(--border-color); font-size: 0.85rem;">
                                     📍 <strong>${tempEnderecoRua}</strong>
                                 </div>
-                                <p>Este é o endereço correto?</p>
+                                <p>Este é o endereço certo?</p>
                                 <div class="chat-options" id="menu-confirma-cep" style="margin-top: 8px;">
                                     <button class="chat-opt-btn" onclick="responderConfirmacaoCep(true)">✅ Sim, está correto</button>
-                                    <button class="chat-opt-btn" onclick="responderConfirmacaoCep(false)" style="color: #ef4444; border-color: #ef4444;">❌ Não, redigitar CEP</button>
+                                    <button class="chat-opt-btn" onclick="responderConfirmacaoCep(false)" style="color: #ef4444; border-color: #ef4444;">❌ Não, digitar outro CEP</button>
                                 </div>
                             `;
-                            adicionarMensagemChat("Encontramos este endereço:", "bot", confirmHtml);
+                            adicionarMensagemChat("Encontramos o seguinte endereço para este CEP:", "bot", confirmHtml);
                         } else {
-                            adicionarMensagemChat("CEP não encontrado. Tente novamente:", "bot");
+                            adicionarMensagemChat("CEP não encontrado. Tente digitar novamente:", "bot");
                             etapaChat = 'cep_aguardando_cep';
                             document.getElementById('chat-input-area').style.display = 'flex';
                         }
                     })
                     .catch(() => {
-                        adicionarMensagemChat("Erro ao buscar CEP. Tente novamente:", "bot");
+                        adicionarMensagemChat("Erro ao buscar o CEP. Tente novamente mais tarde:", "bot");
                         setTimeout(() => iniciarChatBot(), 2000);
                     });
             }
@@ -1119,12 +1074,67 @@
                 if (document.getElementById('cli-endereco')) document.getElementById('cli-endereco').value = enderecoCompleto;
                 if (document.getElementById('cli-numero')) document.getElementById('cli-numero').value = texto;
 
-                adicionarMensagemChat(`CEP e endereço atualizados! 🚀<br><strong>${enderecoCompleto}</strong>`, "bot");
+                adicionarMensagemChat(`Endereço atualizado e salvo permanentemente com sucesso! 🚀<br><strong>${enderecoCompleto}</strong>`, "bot");
                 setTimeout(() => iniciarChatBot(), 3500);
             }
             else if (etapaChat === 'aguardando_motivo_cancelamento') {
-                adicionarMensagemChat("Motivo do cancelamento registrado. 📝 Reembolso em até 3 dias úteis.", "bot");
-                setTimeout(() => iniciarChatBot(), 3500);
+                adicionarMensagemChat("Motivo do cancelamento registrado com sucesso. 📝", "bot");
+                setTimeout(() => {
+                    adicionarMensagemChat("Aguarde 3 dias úteis para o reembolso. 💳", "bot");
+                    solicitarAvaliacaoChat();
+                }, 1000);
+            }
+            else if (etapaChat === 'aguardando_debito_numero') {
+                adicionarMensagemChat("Por favor, digite a validade no formato **__/__** (Ex: 12/28):", "bot");
+                etapaChat = 'aguardando_debito_validade';
+                document.getElementById('chat-input-area').style.display = 'flex';
+                document.getElementById('chat-user-input').focus();
+            } else if (etapaChat === 'aguardando_debito_validade') {
+                adicionarMensagemChat("Por favor, digite o código **CVV** do cartão:", "bot");
+                etapaChat = 'aguardando_debito_cvv';
+                document.getElementById('chat-input-area').style.display = 'flex';
+                document.getElementById('chat-user-input').focus();
+            } else if (etapaChat === 'aguardando_debito_cvv') {
+                adicionarMensagemChat("Pagamento no débito processado com sucesso! ✅", "bot");
+                salvarPedidoDoChat('Cartão de Débito');
+                solicitarAvaliacaoChat();
+            }
+            else if (etapaChat === 'aguardando_credito_numero') {
+                adicionarMensagemChat("Por favor, digite a validade no formato **__/__** (Ex: 12/28):", "bot");
+                etapaChat = 'aguardando_credito_validade';
+                document.getElementById('chat-input-area').style.display = 'flex';
+                document.getElementById('chat-user-input').focus();
+            } else if (etapaChat === 'aguardando_credito_validade') {
+                adicionarMensagemChat("Por favor, digite o código **CVV** do cartão:", "bot");
+                etapaChat = 'aguardando_credito_cvv';
+                document.getElementById('chat-input-area').style.display = 'flex';
+                document.getElementById('chat-user-input').focus();
+            } else if (etapaChat === 'aguardando_credito_cvv') {
+                adicionarMensagemChat("Quantas parcelas você deseja? Escolha de **1x a 10x**:", "bot");
+                const parcelasHtml = `
+                    <div class="chat-options" id="menu-parcelas">
+                        <button class="chat-opt-btn" onclick="escolherParcelasChat(1)">1x à vista</button>
+                        <button class="chat-opt-btn" onclick="escolherParcelasChat(2)">2x sem juros</button>
+                        <button class="chat-opt-btn" onclick="escolherParcelasChat(3)">3x sem juros</button>
+                        <button class="chat-opt-btn" onclick="escolherParcelasChat(4)">4x sem juros</button>
+                        <button class="chat-opt-btn" onclick="escolherParcelasChat(5)">5x sem juros</button>
+                        <button class="chat-opt-btn" onclick="escolherParcelasChat(6)">6x sem juros</button>
+                        <button class="chat-opt-btn" onclick="escolherParcelasChat(7)">7x sem juros</button>
+                        <button class="chat-opt-btn" onclick="escolherParcelasChat(8)">8x sem juros</button>
+                        <button class="chat-opt-btn" onclick="escolherParcelasChat(9)">9x sem juros</button>
+                        <button class="chat-opt-btn" onclick="escolherParcelasChat(10)">10x sem juros</button>
+                    </div>
+                `;
+                adicionarMensagemChat('', 'bot', parcelasHtml);
+            }
+            else if (etapaChat === 'aguardando_avaliacao') {
+                let nota = parseInt(texto);
+                if (isNaN(nota) || nota < 0 || nota > 5) {
+                    adicionarMensagemChat("Por favor, digite um número válido entre 0 e 5:", "bot");
+                    document.getElementById('chat-input-area').style.display = 'flex';
+                    return;
+                }
+                processarNotaAvaliacao(nota);
             }
         }
 
@@ -1134,17 +1144,77 @@
 
             if (confirmado) {
                 adicionarMensagemChat("Sim, está correto", "user");
-                adicionarMensagemChat("Digite o **número da casa ou apartamento**:", "bot");
+                adicionarMensagemChat("Por favor, digite o **número da casa ou apartamento** (Ex: Casa 1, Apt 203) para finalizar:", "bot");
                 etapaChat = 'cep_aguardando_numero';
                 document.getElementById('chat-input-area').style.display = 'flex';
                 document.getElementById('chat-user-input').focus();
             } else {
-                adicionarMensagemChat("Não, redigitar CEP", "user");
+                adicionarMensagemChat("Não, digitar outro CEP", "user");
                 adicionarMensagemChat("Digite o novo CEP correto (apenas números):", "bot");
                 etapaChat = 'cep_aguardando_cep';
                 document.getElementById('chat-input-area').style.display = 'flex';
                 document.getElementById('chat-user-input').focus();
             }
+        }
+
+        function escolherParcelasChat(qtd) {
+            const menuP = document.getElementById('menu-parcelas');
+            if (menuP) menuP.style.display = 'none';
+
+            adicionarMensagemChat(`${qtd}x sem juros`, "user");
+            adicionarMensagemChat(`Cartão de crédito aprovado em ${qtd}x com sucesso! ✅`, "bot");
+            
+            salvarPedidoDoChat(`Cartão de Crédito (${qtd}x)`);
+            solicitarAvaliacaoChat();
+        }
+
+        function salvarPedidoDoChat(formaPagamentoDesc) {
+            if (carrinho.length === 0) return;
+
+            const total = carrinho.reduce((acc, item) => acc + item.preco, 0);
+
+            const novoPedido = {
+                id: Date.now(),
+                cliente: usuarioLogado.nome || 'Cliente',
+                emailCliente: usuarioLogado.email,
+                cep: usuarioLogado.cepSalvo || '00000-000',
+                numero: usuarioLogado.numeroSalvo || 'S/N',
+                endereco: usuarioLogado.enderecoCompleto || 'Endereço cadastrado na conta',
+                pagamento: formaPagamentoDesc,
+                itens: [...carrinho],
+                itensCancelados: [],
+                total,
+                statusEnvio: 'Pedido sendo embalado',
+                prazo: '7 dias úteis',
+                data: new Date().toLocaleString()
+            };
+
+            let pedidos = JSON.parse(localStorage.getItem('pedidos_nexttech')) || [];
+            pedidos.unshift(novoPedido);
+            localStorage.setItem('pedidos_nexttech', JSON.stringify(pedidos));
+
+            carrinho = [];
+            usuarioLogado.carrinho = carrinho;
+            salvarUsuarioNoStorage();
+            atualizarCarrinhoUI();
+        }
+
+        function solicitarAvaliacaoChat() {
+            etapaChat = 'aguardando_avaliacao';
+            adicionarMensagemChat("Avalie de 0 a 5 nosso atendimento 😊:", "bot");
+            document.getElementById('chat-input-area').style.display = 'flex';
+            document.getElementById('chat-user-input').focus();
+        }
+
+        function processarNotaAvaliacao(nota) {
+            let emoji = nota >= 3 ? '😁' : '😢';
+            adicionarMensagemChat(`Nota: ${nota} ${emoji}. Muito obrigado pelo seu feedback! O atendimento foi encerrado.`, 'bot');
+            etapaChat = 'inicio';
+
+            setTimeout(() => {
+                document.getElementById('chat-container').classList.remove('open');
+                chatAberto = false;
+            }, 3000);
         }
     </script>
 </body>
