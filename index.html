@@ -23,7 +23,7 @@
 
         header {
             position: fixed; top: 0; left: 0; width: 100%;
-            background-color: rgba(11, 15, 25, 0.9);
+            background-color: rgba(11, 15, 25, 0.95);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color);
             z-index: 1000; display: flex; justify-content: space-between;
@@ -39,10 +39,22 @@
 
         .header-actions { display: flex; align-items: center; gap: 10px; }
 
-        .cart-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+        .cart-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 600; white-space: nowrap; }
         
-        .logout-btn { background: #1f2937; border: 1px solid var(--border-color); color: #ef4444; padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; transition: background 0.3s; text-decoration: none; font-size: 0.9rem; }
+        .logout-btn { background: #1f2937; border: 1px solid var(--border-color); color: #ef4444; padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; transition: background 0.3s; text-decoration: none; font-size: 0.9rem; white-space: nowrap; }
         .logout-btn:hover { background: #374151; }
+
+        /* Botão do menu mobile (oculto no desktop) */
+        .mobile-menu-btn {
+            display: none;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.6rem 0.85rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
 
         .status-section { padding: 8rem 5% 2rem 5%; display: none; }
         
@@ -50,7 +62,7 @@
             background: var(--card-bg); border: 1px solid var(--border-color); 
             padding: 1.5rem; border-radius: 12px; margin-bottom: 1.2rem; 
         }
-        .card-pedido-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .card-pedido-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
         
         @keyframes piscarPontos {
             0% { opacity: 0.2; }
@@ -85,10 +97,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
         }
 
-        .hero { padding: 6rem 5% 5rem; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 4rem; min-height: 80vh; }
-        .hero-content h1 { font-size: 3.5rem; margin-bottom: 1.5rem; }
+        .hero { padding: 7rem 5% 4rem; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 4rem; min-height: 80vh; }
+        .hero-content h1 { font-size: 3.5rem; margin-bottom: 1.5rem; line-height: 1.2; }
         .hero-content h1 span { color: var(--accent-color); }
         .btn-primary { background-color: var(--accent-color); color: white; border: none; padding: 0.9rem 2rem; border-radius: 8px; cursor: pointer; text-decoration: none; display: inline-block; width: 100%; text-align: center; font-weight: 600;}
         
@@ -96,19 +109,31 @@
         .hero-image img { max-width: 100%; width: 450px; height: auto; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); object-fit: cover; }
 
         .products-section { padding: 3rem 5% 5rem 5%; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
-        .product-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
-        .product-img { height: 180px; width: 100%; object-fit: cover; border-radius: 8px; background-color: #1a2234; margin-bottom: 1rem; }
-        .product-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
+        .product-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.2rem; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+        
+        /* IMAGEM QUADRADA ESTILO MERCADO LIVRE (1:1) */
+        .product-img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: contain;
+            background-color: #ffffff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .product-card h3 { font-size: 1.05rem; margin-bottom: 0.5rem; }
         
         .preco-normal { color: var(--accent-color); font-weight: 600; font-size: 1.1rem; margin-bottom: 1rem; }
         .preco-antigo { text-decoration: line-through; color: var(--text-muted); font-size: 0.9rem; margin-right: 8px; }
         .preco-novo { color: #10b981; font-weight: 700; font-size: 1.2rem; }
-        .tag-promocao { position: absolute; top: 15px; right: 15px; background: #fbbf24; color: #000; font-weight: 800; font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; }
+        .tag-promocao { position: absolute; top: 15px; right: 15px; background: #fbbf24; color: #000; font-weight: 800; font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; z-index: 2; }
 
         .color-select-group { margin-bottom: 10px; }
         .color-select-group label { font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 4px; }
-        .color-select-group select { width: 100%; padding: 6px; background: #1a2234; color: white; border: 1px solid var(--border-color); border-radius: 6px; }
+        .color-select-group select { width: 100%; padding: 8px; background: #1a2234; color: white; border: 1px solid var(--border-color); border-radius: 6px; }
 
         .btn-add-cart { background: var(--accent-color); color: white; border: none; padding: 0.7rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.3s; width: 100%; margin-bottom: 8px; }
         .btn-add-cart:hover { background: var(--accent-hover); }
@@ -191,6 +216,139 @@
         .chat-input-area button {
             background: var(--accent-color); color: white; border: none; padding: 0 14px; border-radius: 6px; cursor: pointer;
         }
+
+        /* ==========================================
+           RESPONSIVIDADE (MODO MOBILE)
+           ========================================== */
+        @media (max-width: 960px) {
+            header {
+                padding: 0.9rem 4%;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            nav {
+                position: fixed;
+                top: 64px;
+                left: 0;
+                width: 100%;
+                background: rgba(11, 15, 25, 0.98);
+                border-bottom: 1px solid var(--border-color);
+                padding: 1rem 5%;
+                display: none;
+                z-index: 999;
+            }
+
+            nav.mobile-open {
+                display: block;
+            }
+
+            nav ul {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            nav ul li {
+                width: 100%;
+            }
+
+            nav ul li a {
+                display: block;
+                padding: 6px 0;
+                font-size: 1rem;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+                padding: 6rem 5% 3rem;
+                min-height: auto;
+            }
+
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .header-actions {
+                gap: 6px;
+            }
+
+            .cart-btn, .logout-btn {
+                padding: 0.5rem 0.7rem;
+                font-size: 0.8rem;
+            }
+
+            .btn-text-mobile {
+                display: none;
+            }
+
+            .products-section {
+                padding: 1.5rem 4% 5rem;
+            }
+
+            /* 2 colunas estilo app do Mercado Livre no celular */
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.85rem;
+            }
+
+            .product-card {
+                padding: 0.85rem;
+            }
+
+            .product-img {
+                padding: 8px;
+                margin-bottom: 0.75rem;
+            }
+
+            .product-card h3 {
+                font-size: 0.92rem;
+            }
+
+            .preco-normal, .preco-novo {
+                font-size: 1rem;
+            }
+
+            .btn-add-cart, .btn-secondary-cart {
+                padding: 0.6rem 0.4rem;
+                font-size: 0.82rem;
+            }
+
+            .card-pedido-header, .item-cancelado-box {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .cart-drawer {
+                padding: 1.25rem;
+            }
+
+            .chat-widget-btn {
+                bottom: 16px;
+                right: 16px;
+                width: 52px;
+                height: 52px;
+                font-size: 1.35rem;
+            }
+
+            .chat-container {
+                bottom: 78px;
+                right: 4%;
+                left: 4%;
+                width: 92%;
+                height: 70vh;
+            }
+        }
     </style>
 </head>
 <body>
@@ -199,7 +357,7 @@
 
     <header>
         <a href="#" class="logo" onclick="mostrarLoja(event)"><i class="fa-solid fa-microchip"></i> Next<span>Tech</span></a>
-        <nav>
+        <nav id="main-nav">
             <ul>
                 <li><a onclick="mostrarLoja(event)" class="active" id="nav-inicio"><i class="fa-solid fa-house"></i> Início</a></li>
                 <li><a onclick="filtrarProdutos(event, 'todos')">Produtos</a></li>
@@ -212,11 +370,14 @@
         </nav>
         <div class="header-actions">
             <button class="cart-btn" onclick="toggleCart()">
-                <i class="fa-solid fa-cart-shopping"></i> Carrinho (<span id="cart-count">0</span>)
+                <i class="fa-solid fa-cart-shopping"></i> <span class="btn-text-mobile">Carrinho</span> (<span id="cart-count">0</span>)
             </button>
             <a href="login.html" class="logout-btn" onclick="fazerLogout()">
-                <i class="fa-solid fa-right-from-bracket"></i> Sair
+                <i class="fa-solid fa-right-from-bracket"></i> <span class="btn-text-mobile">Sair</span>
             </a>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Abrir Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
         </div>
     </header>
 
@@ -340,6 +501,14 @@
         let tempEnderecoRua = '';
         let tempCepConsultado = '';
 
+        function toggleMobileMenu() {
+            document.getElementById('main-nav').classList.toggle('mobile-open');
+        }
+
+        function fecharMobileMenu() {
+            document.getElementById('main-nav').classList.remove('mobile-open');
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
             if (usuarioLogado) {
                 if (document.getElementById('cli-nome')) {
@@ -361,6 +530,7 @@
 
         function abrirMeusPedidos(event) {
             event.preventDefault();
+            fecharMobileMenu();
             document.querySelectorAll('nav ul li a').forEach(el => el.classList.remove('active'));
             document.getElementById('nav-meus-pedidos').classList.add('active');
             document.getElementById('conteudo-loja').style.display = 'none';
@@ -370,6 +540,7 @@
 
         function mostrarLoja(event) {
             if (event) event.preventDefault();
+            fecharMobileMenu();
             document.querySelectorAll('nav ul li a').forEach(el => el.classList.remove('active'));
             document.getElementById('nav-inicio').classList.add('active');
             document.getElementById('status-pedidos').style.display = 'none';
