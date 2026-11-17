@@ -448,7 +448,7 @@
             carregarEstoqueAdmin();
         }
 
-        function salvarProduto() {
+        async function salvarProduto() {
             const nome = document.getElementById('prod-nome').value;
             const preco = parseFloat(document.getElementById('prod-preco').value);
             const imagem = document.getElementById('prod-imagem').value;
@@ -460,10 +460,24 @@
             }
 
             let produtos = JSON.parse(localStorage.getItem('produtos_nexttech')) || [];
-            produtos.push({ nome, preco, imagem, categoria, promocao: false, precoPromo: 0 });
+            const novoProduto = { nome, preco, imagem, categoria, promocao: false, precoPromo: 0 };
+            produtos.push(novoProduto);
+            
+            // Salva localmente (backup)
             localStorage.setItem('produtos_nexttech', JSON.stringify(produtos));
 
-            alert('Produto cadastrado com sucesso!');
+            // Salva no servidor na nuvem (para aparecer para todo mundo)
+            try {
+                await fetch('/api/produtos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(produtos)
+                });
+            } catch (e) {
+                console.error('Erro ao sincronizar com o servidor:', e);
+            }
+
+            alert('Produto cadastrado com sucesso para todos os clientes!');
             document.getElementById('prod-nome').value = '';
             document.getElementById('prod-preco').value = '';
             document.getElementById('prod-imagem').value = '';
@@ -507,7 +521,7 @@
             });
         }
 
-        function atualizarProduto(index) {
+        async function atualizarProduto(index) {
             let produtos = JSON.parse(localStorage.getItem('produtos_nexttech')) || [];
             produtos[index].nome = document.getElementById(`est-nome-${index}`).value;
             produtos[index].preco = parseFloat(document.getElementById(`est-preco-${index}`).value);
@@ -516,15 +530,33 @@
             produtos[index].imagem = document.getElementById(`est-img-${index}`).value;
 
             localStorage.setItem('produtos_nexttech', JSON.stringify(produtos));
+            
+            try {
+                await fetch('/api/produtos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(produtos)
+                });
+            } catch (e) {}
+
             alert('Produto atualizado com sucesso!');
             carregarEstoqueAdmin();
         }
 
-        function excluirProduto(index) {
+        async function excluirProduto(index) {
             if(confirm('Deseja realmente excluir este produto?')) {
                 let produtos = JSON.parse(localStorage.getItem('produtos_nexttech')) || [];
                 produtos.splice(index, 1);
                 localStorage.setItem('produtos_nexttech', JSON.stringify(produtos));
+                
+                try {
+                    await fetch('/api/produtos', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(produtos)
+                    });
+                } catch (e) {}
+
                 carregarEstoqueAdmin();
             }
         }
